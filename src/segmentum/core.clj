@@ -54,6 +54,11 @@
     (log/info component "started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
+(defn restart-app
+  []
+  (stop-app)
+  (start-app []))
+
 (defn -main [& args]
   (mount/start #'segmentum.config/env)
   (cond
@@ -71,3 +76,8 @@
       (System/exit 0))
     :else
     (start-app args)))
+
+
+(comment
+  (-main)
+  (restart-app))
