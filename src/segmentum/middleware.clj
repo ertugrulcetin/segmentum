@@ -1,16 +1,16 @@
 (ns segmentum.middleware
   (:require
-    [segmentum.env :refer [defaults]]
-    [cheshire.generate :as cheshire]
-    [cognitect.transit :as transit]
-    [clojure.tools.logging :as log]
-    [segmentum.layout :refer [error-page]]
-    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
-    [segmentum.middleware.formats :as formats]
-    [muuntaja.middleware :refer [wrap-format wrap-params]]
-    [segmentum.config :refer [env]]
-    [ring-ttl-session.core :refer [ttl-memory-store]]
-    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
+   [segmentum.env :refer [defaults]]
+   [cheshire.generate :as cheshire]
+   [cognitect.transit :as transit]
+   [clojure.tools.logging :as log]
+   [segmentum.layout :refer [error-page]]
+   [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+   [segmentum.middleware.formats :as formats]
+   [muuntaja.middleware :refer [wrap-format wrap-params]]
+   [segmentum.config :refer [env]]
+   [ring-ttl-session.core :refer [ttl-memory-store]]
+   [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
 
 (defn wrap-internal-error [handler]
@@ -34,9 +34,9 @@
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
-      (wrap-defaults
-        (-> site-defaults
-            (assoc-in [:security :anti-forgery] false)
-            (assoc-in  [:session :store] (ttl-memory-store (* 60 30)))))
-      wrap-formats
-      wrap-internal-error))
+    (wrap-defaults
+      (-> site-defaults
+        (assoc-in [:security :anti-forgery] false)
+        (assoc-in  [:session :store] (ttl-memory-store (* 60 30)))))
+    wrap-formats
+    wrap-internal-error))

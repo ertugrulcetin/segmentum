@@ -1,14 +1,15 @@
 (ns segmentum.core
   (:require
-    [segmentum.handler :as handler]
-    [segmentum.nrepl :as nrepl]
-    [luminus.http-server :as http]
-    [luminus-migrations.core :as migrations]
-    [segmentum.config :refer [env]]
-    [clojure.tools.cli :refer [parse-opts]]
-    [clojure.tools.logging :as log]
-    [mount.core :as mount])
+   [segmentum.handler :as handler]
+   [segmentum.nrepl :as nrepl]
+   [luminus.http-server :as http]
+   [luminus-migrations.core :as migrations]
+   [segmentum.config :refer [env]]
+   [clojure.tools.cli :refer [parse-opts]]
+   [clojure.tools.logging :as log]
+   [mount.core :as mount])
   (:gen-class))
+
 
 ;; log uncaught exceptions in threads
 (Thread/setDefaultUncaughtExceptionHandler
@@ -18,18 +19,21 @@
                   :exception ex
                   :where (str "Uncaught exception on" (.getName thread))}))))
 
+
 (def cli-options
   [["-p" "--port PORT" "Port number"
     :parse-fn #(Integer/parseInt %)]])
+
 
 (mount/defstate ^{:on-reload :noop} http-server
   :start
   (http/start
     (-> env
-        (assoc  :handler (handler/app))
-        (update :port #(or (-> env :options :port) %))))
+      (assoc  :handler (handler/app))
+      (update :port #(or (-> env :options :port) %))))
   :stop
   (http/stop http-server))
+
 
 (mount/defstate ^{:on-reload :noop} repl-server
   :start
@@ -46,18 +50,21 @@
     (log/info component "stopped"))
   (shutdown-agents))
 
+
 (defn start-app [args]
   (doseq [component (-> args
-                        (parse-opts cli-options)
-                        mount/start-with-args
-                        :started)]
+                      (parse-opts cli-options)
+                      mount/start-with-args
+                      :started)]
     (log/info component "started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
+
 
 (defn restart-app
   []
   (stop-app)
   (start-app []))
+
 
 (defn -main [& args]
   (mount/start #'segmentum.config/env)

@@ -1,25 +1,28 @@
 (ns segmentum.db.core
   (:require
-    [cheshire.core :refer [generate-string parse-string]]
-    [next.jdbc.date-time]
-    [next.jdbc.prepare]
-    [next.jdbc.result-set]
-    [clojure.tools.logging :as log]
-    [clojure.string :as str]
-    [conman.core :as conman]
-    [segmentum.config :refer [env]]
-    [mount.core :refer [defstate]])
+   [cheshire.core :refer [generate-string parse-string]]
+   [next.jdbc.date-time]
+   [next.jdbc.prepare]
+   [next.jdbc.result-set]
+   [clojure.tools.logging :as log]
+   [clojure.string :as str]
+   [conman.core :as conman]
+   [segmentum.config :refer [env]]
+   [mount.core :refer [defstate]])
   (:import (org.postgresql.util PGobject)))
 
+
 (defstate ^:dynamic *db*
-          :start (if-let [jdbc-url (env :database-url)]
-                   (conman/connect! {:jdbc-url jdbc-url})
-                   (do
-                     (log/warn "database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
-                     *db*))
-          :stop (conman/disconnect! *db*))
+  :start (if-let [jdbc-url (env :database-url)]
+           (conman/connect! {:jdbc-url jdbc-url})
+           (do
+             (log/warn "database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
+             *db*))
+  :stop (conman/disconnect! *db*))
+
 
 (conman/bind-connection *db* "sql/queries.sql")
+
 
 (defn pgobj->clj [^org.postgresql.util.PGobject pgobj]
   (let [type  (.getType pgobj)
@@ -29,6 +32,7 @@
       "jsonb" (parse-string value true)
       "citext" (str value)
       value)))
+
 
 (extend-protocol next.jdbc.result-set/ReadableColumn
   java.sql.Timestamp
@@ -57,10 +61,12 @@
   (read-column-by-index [^org.postgresql.util.PGobject pgobj _2 _3]
     (pgobj->clj pgobj)))
 
+
 (defn clj->jsonb-pgobj [value]
   (doto (PGobject.)
     (.setType "jsonb")
     (.setValue (generate-string value))))
+
 
 (extend-protocol next.jdbc.prepare/SettableParameter
   clojure.lang.IPersistentMap

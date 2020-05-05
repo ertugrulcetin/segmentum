@@ -1,8 +1,9 @@
 (ns segmentum.config
   (:require
-    [cprop.core :refer [load-config]]
-    [cprop.source :as source]
-    [mount.core :refer [args defstate]]))
+   [cprop.core :refer [load-config]]
+   [cprop.source :as source]
+   [mount.core :refer [args defstate]]))
+
 
 (defstate env
   :start

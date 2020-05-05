@@ -5,10 +5,10 @@
 
 
 (c/defroutes not-found
-             (r/not-found "404!"))
+  (r/not-found "404!"))
 
 
 (resource hello
-          :get ["/"]
-          :content-type :text
-          :handle-ok (fn [ctx] "Hello Segmentum!!"))
+  :get ["/"]
+  :content-type :text
+  :handle-ok (fn [ctx] "Hello Segmentum!!"))

@@ -37,64 +37,71 @@
   :min-lein-version "2.0.0"
 
   :source-paths ["src"]
+
   :test-paths ["test"]
+
   :resource-paths ["resources"]
+
   :target-path "target/%s/"
+
   :main ^:skip-aot segmentum.core
 
-  :plugins [[pisano/lein-kibit "0.1.2"]]
+  :plugins [[pisano/lein-kibit "0.1.2"]
+            [ertu/lein-cljfmt "0.1.0"]]
+
+  :cljfmt {:indents {#".*" [[:inner 0]]} :more-newlines? true}
 
   :profiles
-  {:uberjar {:omit-source true
-             :aot :all
-             :uberjar-name "segmentum.jar"
-             :source-paths ["env/prod/clj" ]
-             :resource-paths ["env/prod/resources"]}
+  {:uberjar       {:omit-source    true
+                   :aot            :all
+                   :uberjar-name   "segmentum.jar"
+                   :source-paths   ["env/prod/clj"]
+                   :resource-paths ["env/prod/resources"]}
 
    :dev           [:project/dev :profiles/dev]
    :test          [:project/dev :project/test :profiles/test]
 
-   :project/dev  {:jvm-opts ["-Dconf=dev-config.edn" ]
+   :project/dev   {:jvm-opts       ["-Dconf=dev-config.edn"]
 
-                  :dependencies [[pjstadig/humane-test-output "0.10.0"]
-                                 [prone "2020-01-17"]
-                                 [ring/ring-devel "1.8.0"]
-                                 [ring/ring-mock "0.4.0"]
-                                 [jonase/eastwood "0.3.10" :exclusions [org.clojure/clojure]]]
+                   :dependencies   [[pjstadig/humane-test-output "0.10.0"]
+                                    [prone "2020-01-17"]
+                                    [ring/ring-devel "1.8.0"]
+                                    [ring/ring-mock "0.4.0"]
+                                    [jonase/eastwood "0.3.10" :exclusions [org.clojure/clojure]]]
 
-                  :plugins      [[com.jakemccrary/lein-test-refresh "0.24.1"]
-                                 [jonase/eastwood "0.3.10" :exclusions [org.clojure/clojure]]]
+                   :plugins        [[com.jakemccrary/lein-test-refresh "0.24.1"]
+                                    [jonase/eastwood "0.3.10" :exclusions [org.clojure/clojure]]]
 
-                  :source-paths ["env/dev/clj" ]
+                   :source-paths   ["env/dev/clj"]
 
-                  :resource-paths ["env/dev/resources"]
+                   :resource-paths ["env/dev/resources"]
 
-                  :repl-options {:init-ns user :timeout 120000}
+                   :repl-options   {:init-ns user :timeout 120000}
 
-                  :injections [(require 'pjstadig.humane-test-output)
-                               (pjstadig.humane-test-output/activate!)]
+                   :injections     [(require 'pjstadig.humane-test-output)
+                                    (pjstadig.humane-test-output/activate!)]
 
-                  :eastwood
-                  {:source-paths       ["src"]
-                   :config-files       ["./eastwood-config.clj"]
-                   :add-linters        [:unused-private-vars
-                                        ;; These linters are pretty useful but give a few false positives and can't be selectively
-                                        ;; disabled (yet)
-                                        ;;
-                                        ;; For example see https://github.com/jonase/eastwood/issues/193
-                                        ;;
-                                        ;; It's still useful to re-enable them and run them every once in a while because they catch
-                                        ;; a lot of actual errors too. Keep an eye on the issue above and re-enable them if we can
-                                        ;; get them to work
-                                        #_:unused-fn-args
-                                        #_:unused-locals]
-                   :exclude-linters    [; Turn this off temporarily until we finish removing self-deprecated functions & macros
-                                        :deprecations
-                                        ;; this has a fit in libs that use Potemin `import-vars` such as `java-time`
-                                        :implicit-dependencies
-                                        ;; too many false positives for now
-                                        :unused-ret-vals]}}
-   :project/test {:jvm-opts ["-Dconf=test-config.edn" ]
-                  :resource-paths ["env/test/resources"] }
-   :profiles/dev {}
+                   :eastwood
+                                   {:source-paths    ["src"]
+                                    :config-files    ["./eastwood-config.clj"]
+                                    :add-linters     [:unused-private-vars
+                                                      ;; These linters are pretty useful but give a few false positives and can't be selectively
+                                                      ;; disabled (yet)
+                                                      ;;
+                                                      ;; For example see https://github.com/jonase/eastwood/issues/193
+                                                      ;;
+                                                      ;; It's still useful to re-enable them and run them every once in a while because they catch
+                                                      ;; a lot of actual errors too. Keep an eye on the issue above and re-enable them if we can
+                                                      ;; get them to work
+                                                      #_:unused-fn-args
+                                                      #_:unused-locals]
+                                    :exclude-linters [; Turn this off temporarily until we finish removing self-deprecated functions & macros
+                                                      :deprecations
+                                                      ;; this has a fit in libs that use Potemin `import-vars` such as `java-time`
+                                                      :implicit-dependencies
+                                                      ;; too many false positives for now
+                                                      :unused-ret-vals]}}
+   :project/test  {:jvm-opts       ["-Dconf=test-config.edn"]
+                   :resource-paths ["env/test/resources"]}
+   :profiles/dev  {}
    :profiles/test {}})
