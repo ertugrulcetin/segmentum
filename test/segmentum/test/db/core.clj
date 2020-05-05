@@ -8,7 +8,7 @@
    [segmentum.config :refer [env]]
    [mount.core :as mount]))
 
-(use-fixtures
+#_ (use-fixtures
   :once
   (fn [f]
     (mount/start
@@ -17,7 +17,7 @@
     (migrations/migrate ["migrate"] (select-keys env [:database-url]))
     (f)))
 
-(deftest test-users
+#_(deftest test-users
   (jdbc/with-transaction [t-conn *db* {:rollback-only true}]
     (is (= 1 (db/create-user!
               t-conn
