@@ -47,7 +47,7 @@
   :main ^:skip-aot segmentum.core
 
   :plugins [[pisano/lein-kibit "0.1.2"]
-            [ertu/lein-cljfmt "0.1.0"]]
+            [ertu/lein-cljfmt "0.1.1"]]
 
   :cljfmt {:indents {#".*" [[:inner 0]]} :more-newlines? true}
 

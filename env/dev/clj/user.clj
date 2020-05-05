@@ -14,7 +14,6 @@
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
-
 (add-tap (bound-fn* clojure.pprint/pprint))
 
 
@@ -69,6 +68,3 @@
   "Create a new up and down migration file with a generated timestamp and `name`."
   [name]
   (migrations/create name (select-keys env [:database-url])))
-
-
-

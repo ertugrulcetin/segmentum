@@ -11,7 +11,6 @@
   (:gen-class))
 
 
-;; log uncaught exceptions in threads
 (Thread/setDefaultUncaughtExceptionHandler
   (reify Thread$UncaughtExceptionHandler
     (uncaughtException [_ thread ex]
