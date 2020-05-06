@@ -3,13 +3,12 @@
    [clojure.test :refer :all]
    [ring.mock.request :refer :all]
    [segmentum.handler :refer :all]
-   [segmentum.middleware.formats :as formats]
    [muuntaja.core :as m]
    [mount.core :as mount]))
 
 
 (defn parse-json [body]
-  (m/decode formats/instance "application/json" body))
+  #_(m/decode formats/instance "application/json" body))
 
 
 (use-fixtures
