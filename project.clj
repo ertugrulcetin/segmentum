@@ -32,7 +32,9 @@
                  [ring/ring-core "1.8.0"]
                  [ring/ring-defaults "0.3.2"]
                  [selmer "1.12.23"]
-                 [patika "0.1.10"]]
+                 [patika "0.1.10"]
+                 [com.rpl/defexception "0.2.0"]
+                 [potemkin "0.4.5"]]
 
   :min-lein-version "2.0.0"
 

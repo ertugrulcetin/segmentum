@@ -59,12 +59,6 @@
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
 
-(defn restart-app
-  []
-  (stop-app)
-  (start-app []))
-
-
 (defn -main [& args]
   (mount/start #'segmentum.config/env)
   (cond
@@ -85,5 +79,4 @@
 
 
 (comment
-  (-main)
-  (restart-app))
+  (-main))
