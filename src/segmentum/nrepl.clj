@@ -18,8 +18,6 @@
       :handler handler
       :ack-port ack-port
       :greeting-fn greeting-fn)
-
-
     (catch Throwable t
       (log/error t "failed to start nREPL")
       (throw t))))

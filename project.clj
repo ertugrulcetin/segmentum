@@ -34,7 +34,8 @@
                  [selmer "1.12.23"]
                  [patika "0.1.11"]
                  [com.rpl/defexception "0.2.0"]
-                 [potemkin "0.4.5"]]
+                 [potemkin "0.4.5"]
+                 [kezban "0.1.90"]]
 
   :min-lein-version "2.0.0"
 
