@@ -18,9 +18,9 @@
                              {:status 400 :body (:cause throwable)}
                              {:status 500 :body "Something went wrong"}))))]
     `(p/resource ~name
-                 ~method
-                 ~endpoint-and-binding
-                 ~'_
-                 ~media-type
-                 :handle-exception ~handle-ex-fn
-                 ~@opts)))
+       ~method
+       ~endpoint-and-binding
+       ~'_
+       ~media-type
+       :handle-exception ~handle-ex-fn
+       ~@opts)))

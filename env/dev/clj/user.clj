@@ -14,6 +14,7 @@
 
 (alter-var-root #'s/*explain-out* (constantly expound/printer))
 
+
 (add-tap (bound-fn* clojure.pprint/pprint))
 
 
