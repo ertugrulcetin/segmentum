@@ -4,10 +4,14 @@
 
   :url "http://example.com/FIXME"
 
-  :dependencies [[ch.qos.logback/logback-classic "1.2.3"]
+  :dependencies [[org.clojure/clojure "1.10.1"]
+                 [org.clojure/tools.cli "1.0.194"]
+                 [org.clojure/tools.logging "1.1.0"]
+                 [org.clojure/core.async "1.1.587"]
+                 [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.10.0"]
                  [clojure.java-time "0.3.2"]
-                 [conman "0.8.7"]
+                 [conman "0.8.8"]
                  [cprop "0.1.16"]
                  [expound "0.8.4"]
                  [funcool/struct "1.4.0"]
@@ -21,21 +25,21 @@
                  [metosin/ring-http-response "0.9.1"]
                  [mount "0.1.16"]
                  [nrepl "0.7.0"]
-                 [org.clojure/clojure "1.10.1"]
-                 [org.clojure/tools.cli "1.0.194"]
-                 [org.clojure/tools.logging "1.1.0"]
-                 [org.postgresql/postgresql "42.2.11"]
+                 [org.postgresql/postgresql "42.2.12"]
                  [org.webjars.npm/bulma "0.8.2"]
                  [org.webjars.npm/material-icons "0.3.1"]
                  [org.webjars/webjars-locator "0.40"]
                  [ring-webjars "0.2.0"]
-                 [ring/ring-core "1.8.0"]
+                 [ring/ring-core "1.8.1"]
                  [ring/ring-defaults "0.3.2"]
                  [selmer "1.12.23"]
                  [patika "0.1.11"]
                  [com.rpl/defexception "0.2.0"]
                  [potemkin "0.4.5"]
-                 [kezban "0.1.90"]]
+                 [kezban "0.1.90"]
+                 [amalloy/ring-gzip-middleware "0.1.4"]
+                 [medley "1.3.0"]
+                 [prismatic/schema "1.1.12"]]
 
   :min-lein-version "2.0.0"
 
@@ -50,7 +54,8 @@
   :main ^:skip-aot segmentum.core
 
   :plugins [[pisano/lein-kibit "0.1.2"]
-            [ertu/lein-cljfmt "0.1.1"]]
+            [ertu/lein-cljfmt "0.1.1"]
+            [lein-ancient "0.6.15"]]
 
   :cljfmt {:indents {#".*" [[:inner 0]]} :more-newlines? true}
 
@@ -78,12 +83,12 @@
 
                    :dependencies   [[pjstadig/humane-test-output "0.10.0"]
                                     [prone "2020-01-17"]
-                                    [ring/ring-devel "1.8.0"]
+                                    [ring/ring-devel "1.8.1"]
                                     [ring/ring-mock "0.4.0"]
-                                    [jonase/eastwood "0.3.10" :exclusions [org.clojure/clojure]]]
+                                    [jonase/eastwood "0.3.11" :exclusions [org.clojure/clojure]]]
 
                    :plugins        [[com.jakemccrary/lein-test-refresh "0.24.1"]
-                                    [jonase/eastwood "0.3.10" :exclusions [org.clojure/clojure]]]
+                                    [jonase/eastwood "0.3.11" :exclusions [org.clojure/clojure]]]
 
                    :source-paths   ["env/dev/clj"]
 

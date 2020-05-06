@@ -1,5 +1,5 @@
 (ns segmentum.api.core
-  (:require [segmentum.imports :refer [->ModelValidationException resource]]
+  (:require [segmentum.util.imports :refer [->ModelValidationException resource]]
             [compojure.core :as c]
             [compojure.route :as r]))
 

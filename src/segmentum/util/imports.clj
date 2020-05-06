@@ -1,9 +1,9 @@
-(ns segmentum.imports
-  (:require [segmentum.api.util]
+(ns segmentum.util.imports
+  (:require [segmentum.api.common]
             [potemkin :as p]))
 
 
 (p/import-vars
-  [segmentum.api.util
+  [segmentum.api.common
    ->ModelValidationException
    resource])

@@ -1,4 +1,4 @@
-(ns segmentum.api.util
+(ns segmentum.api.common
   (:require [patika.core :as p]
             [com.rpl.defexception :refer [defexception]]
             [liberator.representation :refer [ring-response]]
