@@ -5,6 +5,5 @@
 
 (p/import-vars
   [segmentum.api.util
-
    ->ModelValidationException
    resource])

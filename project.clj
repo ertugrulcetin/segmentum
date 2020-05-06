@@ -53,15 +53,15 @@
 
   :cljfmt {:indents {#".*" [[:inner 0]]} :more-newlines? true}
 
-  :jvm-opts ["-server"
-             "-XX:-OmitStackTraceInFastThrow"
-             "-XX:+UseConcMarkSweepGC"
-             "-XX:+CMSParallelRemarkEnabled"
-             "-XX:+UseCMSInitiatingOccupancyOnly"
-             "-XX:CMSInitiatingOccupancyFraction=70"
-             "-XX:+ScavengeBeforeFullGC"
-             "-XX:+CMSScavengeBeforeRemark"
-             "-Djdk.attach.allowAttachSelf=true"]
+  :jvm-opts ^:replace ["-server"
+                       "-XX:-OmitStackTraceInFastThrow"
+                       "-XX:+UseConcMarkSweepGC"
+                       "-XX:+CMSParallelRemarkEnabled"
+                       "-XX:+UseCMSInitiatingOccupancyOnly"
+                       "-XX:CMSInitiatingOccupancyFraction=70"
+                       "-XX:+ScavengeBeforeFullGC"
+                       "-XX:+CMSScavengeBeforeRemark"
+                       "-Djdk.attach.allowAttachSelf=true"]
 
   :profiles
   {:uberjar       {:omit-source    true
