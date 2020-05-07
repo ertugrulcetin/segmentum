@@ -29,8 +29,9 @@
 
 
 (defn jvm-arguments []
-  (filterv #(re-find #"-XX:*|-Xms*|-Xmx|-Xlog*|-server|-client" %)
-    (.getInputArguments (ManagementFactory/getRuntimeMXBean))))
+  (->> (ManagementFactory/getRuntimeMXBean)
+    .getInputArguments
+    (filterv #(re-find #"-XX:*|-Xms*|-Xmx|-Xlog*|-server|-client" %))))
 
 
 (defn system-info []
