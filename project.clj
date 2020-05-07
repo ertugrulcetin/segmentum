@@ -39,7 +39,8 @@
                  [kezban "0.1.90"]
                  [amalloy/ring-gzip-middleware "0.1.4"]
                  [medley "1.3.0"]
-                 [prismatic/schema "1.1.12"]]
+                 [prismatic/schema "1.1.12"]
+                 [clj-http "3.10.1"]]
 
   :min-lein-version "2.0.0"
 
