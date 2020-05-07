@@ -1,14 +1,16 @@
 (ns segmentum.core
   (:require
-   [segmentum.handler :as handler]
-   [segmentum.nrepl :as nrepl]
-   [luminus.http-server :as http]
-   [luminus-migrations.core :as migrations]
-   [segmentum.config :refer [env]]
-   [clojure.tools.cli :refer [parse-opts]]
-   [clojure.tools.logging :as log]
-   [mount.core :as mount])
-  (:gen-class))
+    [segmentum.handler :as handler]
+    [segmentum.nrepl :as nrepl]
+    [luminus.http-server :as http]
+    [luminus-migrations.core :as migrations]
+    [segmentum.db.migration :as mig]
+    [segmentum.config :refer [env]]
+    [clojure.tools.cli :refer [parse-opts]]
+    [clojure.tools.logging :as log]
+    [mount.core :as mount])
+  (:gen-class)
+  (:import (java.util TimeZone)))
 
 
 (Thread/setDefaultUncaughtExceptionHandler
@@ -65,22 +67,29 @@
 
 
 (defn -main [& args]
+  (TimeZone/setDefault (TimeZone/getTimeZone "UTC"))
   (mount/start #'segmentum.config/env)
   (cond
     (nil? (:database-url env))
     (do
       (log/error "Database configuration not found, :database-url environment variable must be set before running")
       (System/exit 1))
+
     (some #{"init"} args)
     (do
       (migrations/init (select-keys env [:database-url :init-script]))
       (System/exit 0))
+
     (migrations/migration? args)
     (do
       (migrations/migrate args (select-keys env [:database-url]))
       (System/exit 0))
+
     :else
-    (start-app args)))
+    (do
+      ;; TODO we are going to enable this when we have the domain model
+      #_(mig/start-migration (:database-url env))
+      (start-app args))))
 
 
 (comment
