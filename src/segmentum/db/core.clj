@@ -26,13 +26,15 @@
   :stop (conman/disconnect! *db*))
 
 
-(def sql-files (->> (io/resource "sql")
-                 io/as-file
-                 file-seq
-                 (filter (memfn isFile))))
+(defn- get-sql-files []
+  (->> (io/resource "sql")
+    io/as-file
+    file-seq
+    (filter (memfn isFile))))
 
 
-(def bind-conn-map (apply conman/bind-connection-map (cons *db* sql-files)))
+(defstate conn-map
+  :start (apply conman/bind-connection-map (cons *db* (get-sql-files))))
 
 
 (defn pgobj->clj [^org.postgresql.util.PGobject pgobj]
@@ -94,7 +96,7 @@
 
 
 (defn query [q-name params]
-  (conman/query bind-conn-map q-name params))
+  (conman/query conn-map q-name params))
 
 
 (defmacro with-trans
