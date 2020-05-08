@@ -41,7 +41,8 @@
                  [medley "1.3.0"]
                  [prismatic/schema "1.1.12"]
                  [clj-http "3.10.1"]
-                 [honeysql "0.9.10"]]
+                 [honeysql "0.9.10"]
+                 [amalloy/ring-buffer "1.3.1"]]
 
   :min-lein-version "2.0.0"
 
