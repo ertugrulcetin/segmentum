@@ -40,7 +40,8 @@
                  [amalloy/ring-gzip-middleware "0.1.4"]
                  [medley "1.3.0"]
                  [prismatic/schema "1.1.12"]
-                 [clj-http "3.10.1"]]
+                 [clj-http "3.10.1"]
+                 [honeysql "0.9.10"]]
 
   :min-lein-version "2.0.0"
 
@@ -55,10 +56,11 @@
   :main ^:skip-aot segmentum.core
 
   :plugins [[pisano/lein-kibit "0.1.2"]
-            [ertu/lein-cljfmt "0.1.1"]
+            [lein-cljfmt "0.6.7"]
             [lein-ancient "0.6.15"]]
 
-  :cljfmt {:indents {#".*" [[:inner 0]]} :more-newlines? true}
+  :cljfmt {:indents {#".*" [[:inner 0]]}
+           :remove-consecutive-blank-lines? false}
 
   :jvm-opts ^:replace ["-server"
                        "-XX:-OmitStackTraceInFastThrow"
