@@ -24,7 +24,7 @@
   {:instance-id conf/instance-id
    :timestamp   (->> (.getTimeStamp event)
                   coerce/from-long
-                  (time/unparse (time/formatters :date-time)))
+                  (time/unparse (time/formatter :date-time)))
    :level       (str (.getLevel event))
    :logger-name (.getLoggerName event)
    :message     (.getMessage event)
