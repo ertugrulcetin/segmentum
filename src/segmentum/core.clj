@@ -1,14 +1,14 @@
 (ns segmentum.core
   (:require
-    [segmentum.handler :as handler]
-    [segmentum.nrepl :as nrepl]
-    [luminus.http-server :as http]
-    [luminus-migrations.core :as migrations]
-    [segmentum.db.migration :as mig]
-    [segmentum.config :refer [env]]
-    [clojure.tools.cli :refer [parse-opts]]
-    [clojure.tools.logging :as log]
-    [mount.core :as mount])
+   [segmentum.handler :as handler]
+   [segmentum.nrepl :as nrepl]
+   [luminus.http-server :as http]
+   [luminus-migrations.core :as migrations]
+   [segmentum.db.migration :as mig]
+   [segmentum.config :refer [env]]
+   [clojure.tools.cli :refer [parse-opts]]
+   [clojure.tools.logging :as log]
+   [mount.core :as mount])
   (:gen-class)
   (:import (java.util TimeZone)))
 

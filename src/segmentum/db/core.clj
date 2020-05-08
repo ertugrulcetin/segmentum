@@ -7,11 +7,14 @@
    [clojure.tools.logging :as log]
    [clojure.string :as str]
    [conman.core :as conman]
+   [honeysql.core :as hsql]
    [segmentum.config :refer [env]]
-   [mount.core :refer [defstate]])
+   [mount.core :refer [defstate]]
+   [clojure.java.jdbc :as jdbc])
   (:import (org.postgresql.util PGobject)))
 
 
+;;TODO add pool spec instead of :jdbc-url
 (defstate ^:dynamic *db*
   :start (if-let [jdbc-url (env :database-url)]
            (conman/connect! {:jdbc-url jdbc-url})
@@ -21,7 +24,7 @@
   :stop (conman/disconnect! *db*))
 
 
-(conman/bind-connection *db* "sql/queries.sql")
+(def bind-conn-map (conman/bind-connection-map *db* "sql/queries.sql"))
 
 
 (defn pgobj->clj [^org.postgresql.util.PGobject pgobj]
@@ -80,3 +83,31 @@
       (if-let [elem-type (when (= (first type-name) \_) (str/join (rest type-name)))]
         (.setObject stmt idx (.createArrayOf conn elem-type (to-array v)))
         (.setObject stmt idx (clj->jsonb-pgobj v))))))
+
+
+(defn query [q-name params]
+  (conman/query bind-conn-map q-name params))
+
+
+(defmacro with-trans
+  "Executes a set of SQL queries, if one fails all system rolls back."
+  [& args]
+  `(conman/with-transaction [*db*]
+     ~@args))
+
+
+(defn exec-query
+  "Takes a query as a string (Raw SQL) to evaluate.
+   Usage: `(exec-query \"SELECT * FROM Customers;\")`"
+  [sql]
+  (jdbc/with-db-connection [conn {:datasource *db*}]
+    (jdbc/query conn sql)))
+
+
+(defn exec-query-in-hsql
+  "Takes clauses as a set of keywords, HoneySQL generates the SQL form.
+   Usage: `(exec-query-in-hsql :select :* :from :customers)`
+   Detailed docs: https://github.com/jkk/honeysql"
+  [& clauses]
+  (jdbc/with-db-connection [conn {:datasource *db*}]
+    (jdbc/query conn (hsql/format (apply hsql/build clauses)))))
