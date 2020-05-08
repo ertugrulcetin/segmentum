@@ -15,6 +15,7 @@
   (:import (org.postgresql.util PGobject)))
 
 
+;;TODO we might want to add delay fn to avoid execute conn during compiling
 ;;TODO add pool spec instead of :jdbc-url
 (defstate ^:dynamic *db*
   :start (if-let [jdbc-url (env :database-url)]
