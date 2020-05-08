@@ -2,7 +2,11 @@
   (:require
    [cprop.core :refer [load-config]]
    [cprop.source :as source]
-   [mount.core :refer [args defstate]]))
+   [mount.core :refer [args defstate]])
+  (:import (java.util UUID)))
+
+
+(defonce instance-id (str (UUID/randomUUID)))
 
 
 (defstate env
