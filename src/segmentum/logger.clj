@@ -3,8 +3,7 @@
             [kezban.core :refer [when-no-aot]]
             [clj-time.coerce :as coerce]
             [clj-time.format :as time]
-            [amalloy.ring-buffer :refer [ring-buffer]]
-            [clojure.tools.logging :as log])
+            [amalloy.ring-buffer :refer [ring-buffer]])
   (:import (ch.qos.logback.classic Logger)
            (org.slf4j LoggerFactory)
            (ch.qos.logback.core AppenderBase)
