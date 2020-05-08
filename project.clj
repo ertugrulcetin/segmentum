@@ -56,10 +56,11 @@
   :main ^:skip-aot segmentum.core
 
   :plugins [[pisano/lein-kibit "0.1.2"]
-            [ertu/lein-cljfmt "0.1.1"]
+            [lein-cljfmt "0.6.7"]
             [lein-ancient "0.6.15"]]
 
-  :cljfmt {:indents {#".*" [[:inner 0]]} :more-newlines? true}
+  :cljfmt {:indents {#".*" [[:inner 0]]}
+           :remove-consecutive-blank-lines? false}
 
   :jvm-opts ^:replace ["-server"
                        "-XX:-OmitStackTraceInFastThrow"
