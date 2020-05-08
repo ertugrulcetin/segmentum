@@ -10,7 +10,8 @@
    [honeysql.core :as hsql]
    [segmentum.config :refer [env]]
    [mount.core :refer [defstate]]
-   [clojure.java.jdbc :as jdbc])
+   [clojure.java.jdbc :as jdbc]
+   [clojure.java.io :as io])
   (:import (org.postgresql.util PGobject)))
 
 
@@ -24,7 +25,13 @@
   :stop (conman/disconnect! *db*))
 
 
-(def bind-conn-map (conman/bind-connection-map *db* "sql/queries.sql"))
+(def sql-files (->> (io/resource "sql")
+                 io/as-file
+                 file-seq
+                 (filter (memfn isFile))))
+
+
+(def bind-conn-map (apply conman/bind-connection-map (cons *db* sql-files)))
 
 
 (defn pgobj->clj [^org.postgresql.util.PGobject pgobj]
