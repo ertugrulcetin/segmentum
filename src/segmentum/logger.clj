@@ -16,6 +16,7 @@
 
 
 (defn logs []
+  "System logs, from latest to oldest."
   (rseq @logs-q))
 
 
