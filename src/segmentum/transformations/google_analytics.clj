@@ -24,9 +24,9 @@
                       :action :ea
                       :label :el
                       :value :ev
-                      :customer-id :cid})
-    (conj {:v google-analytics-version
-           :tid google-tracking-id})))
+                      :client-id :cid})
+    (merge {:v google-analytics-version
+            :tid google-tracking-id})))
 
 
 (defn google-analytics-handler [params]
