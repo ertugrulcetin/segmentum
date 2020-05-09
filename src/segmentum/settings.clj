@@ -82,7 +82,7 @@
 
 
 (defn set
-  "Sets settings by given key and value.
+  "Sets setting by given key and value.
    Usage: (set :smtp-host \"http://myhost.com\")"
   [key val]
   (swap! settings-vals assoc key (str val))
