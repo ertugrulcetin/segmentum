@@ -88,7 +88,7 @@
     :else
     (do
       ;; TODO we are going to enable this when we have the domain model
-      #_(mig/start-migration (:database-url env))
+      (mig/start-migration (:database-url env))
       (start-app args))))
 
 

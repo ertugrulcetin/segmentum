@@ -1,1 +1,11 @@
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+--;;
+
 SET TIME ZONE 'UTC';
+
+--;;
+
+CREATE TABLE IF NOT EXISTS settings (
+key varchar(254) UNIQUE NOT NULL PRIMARY KEY,
+value TEXT NOT NULL);

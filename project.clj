@@ -36,7 +36,7 @@
                  [patika "0.1.11"]
                  [com.rpl/defexception "0.2.0"]
                  [potemkin "0.4.5"]
-                 [kezban "0.1.90"]
+                 [kezban "0.1.91"]
                  [amalloy/ring-gzip-middleware "0.1.4"]
                  [medley "1.3.0"]
                  [prismatic/schema "1.1.12"]

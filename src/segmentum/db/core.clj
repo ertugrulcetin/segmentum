@@ -11,6 +11,8 @@
    [segmentum.config :refer [env]]
    [mount.core :refer [defstate]]
    [clojure.java.jdbc :as jdbc]
+   [hugsql.core :as hugsql]
+   [hugsql.adapter.next-jdbc :as next-adapter]
    [clojure.java.io :as io])
   (:import (org.postgresql.util PGobject)))
 
@@ -19,7 +21,11 @@
 ;;TODO add pool spec instead of :jdbc-url
 (defstate ^:dynamic *db*
   :start (if-let [jdbc-url (env :database-url)]
-           (conman/connect! {:jdbc-url jdbc-url})
+           (do
+             (log/info "Establishing database connection...")
+             (let [conn (conman/connect! {:jdbc-url jdbc-url})]
+               (hugsql/set-adapter! (next-adapter/hugsql-adapter-next-jdbc))
+               conn))
            (do
              (log/warn "database connection URL was not found, please set :database-url in your config, e.g: dev-config.edn")
              *db*))
@@ -85,6 +91,7 @@
   clojure.lang.IPersistentMap
   (set-parameter [^clojure.lang.IPersistentMap v ^java.sql.PreparedStatement stmt ^long idx]
     (.setObject stmt idx (clj->jsonb-pgobj v)))
+
   clojure.lang.IPersistentVector
   (set-parameter [^clojure.lang.IPersistentVector v ^java.sql.PreparedStatement stmt ^long idx]
     (let [conn      (.getConnection stmt)
@@ -95,8 +102,11 @@
         (.setObject stmt idx (clj->jsonb-pgobj v))))))
 
 
-(defn query [q-name params]
-  (conman/query conn-map q-name params))
+(defn query
+  ([q-name]
+   (query q-name {}))
+  ([q-name params]
+   (conman/query conn-map q-name params)))
 
 
 (defmacro with-trans
