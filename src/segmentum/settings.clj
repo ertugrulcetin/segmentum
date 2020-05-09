@@ -29,10 +29,10 @@
 
 (defn- type-casting [type v]
   (case type
-    :bool (Boolean/parseBoolean v)
-    :int (Integer/parseInt v)
+    :bool   (Boolean/parseBoolean v)
+    :int    (Integer/parseInt v)
     :double (Double/parseDouble v)
-    :json (json/read-str v :key-fn keyword)
+    :json   (json/read-str v :key-fn keyword)
     v))
 
 
