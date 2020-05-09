@@ -53,8 +53,12 @@
 (defmacro defsetting
   "Creates a new setting that will be added to the database.
 
-   Usage: (smtp-host) => returns smtp host's value
-          (smtp-host \"http://smtp.gmail.com\") => updates SMTP host with given value
+   Usage:  (defsetting smtp-host
+             \"Defines host of SMTP server\"
+              :default \"http://smtp.example.com\")
+
+   (smtp-host) => returns smtp host's value
+   (smtp-host \"http://smtp.gmail.com\") => updates SMTP host with given value
 
    You can pass options too:
    :default       - The default value of the setting. (default: nil)
