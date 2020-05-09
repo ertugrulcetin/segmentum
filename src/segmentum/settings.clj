@@ -81,7 +81,8 @@
   ([key type]
    (let [v (or (@settings-vals key)
              (:value (db/query :get-setting {:key (name key)})))]
-     (when-not (@registered-settings key) (throw (Exception. (str "Setting not found: " key))))
+     (when-not (@registered-settings key)
+       (throw (Exception. (str "Setting not found: " key))))
      (type-casting type v))))
 
 
