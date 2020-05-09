@@ -1,0 +1,154 @@
+{:mappings {:type :t
+            :category :ec
+            :action :ea
+            :label :el
+            :value :ev
+            :client-id :cid
+            :user-agent :ua
+            :session-control :sc
+            :ip-override :uip
+            :data-source :ds
+            :anonymize-ip :aip
+            :user-id :uid
+            :disabling-advertising-personalization :npa
+            :queue-time :qt
+            :cache-buster :z
+            :geographical :geoid
+            :document-referrer :dr
+            :campaign-name :cn
+            :campaign-source :cs
+            :campaign-medium :cm
+            :campaign-keyword :ck
+            :campaign-content :cc
+            :campaign-id :ci
+            :screen-resolution :sr
+            :viewport-size :vp
+            :document-encoding :de
+            :screen-colors :sd
+            :user-language :ul
+            :java-enabled :je
+            :flash-version :fl
+            :document-location-url :dl
+            :document-host-name :dh
+            :document-path :dp
+            :document-title :dt
+            :screen-name :cd
+            :link-id :linkid
+            :application-name :an
+            :application-id :aid
+            :application-version :av
+            :application-installer-id :aiid
+            :transaction-id :ti
+            :transaction-affiliation :ta
+            :transaction-revenue :tr
+            :transaction-shipping :ts
+            :transaction-tax :tt
+            :item-name :in
+            :item-price :ip
+            :item-quantity :iq
+            :item-code :ic
+            :item-category :iv
+            :affiliation :ta
+            :revenue :tr
+            :tax :tt
+            :shipping :ts
+            :coupon-code :tcc
+            :product-action-list :pal
+            :checkout-step :cos
+            :checkout-step-option :col
+            :currency-code :cu
+            :social-network :sn
+            :social-action :sa
+            :social-action-target :st
+            :user-timing-category :utc
+            :user-timing-time :utt
+            :user-timing-variable-name :utv
+            :user-timing-label :utl
+            :page-load-time :plt
+            :dns-time :dns
+            :page-download-time :pdt
+            :redirect-response-time :rrt
+            :tcp-connect-time :tcp
+            :server-response-time :srt
+            :dom-interactive-time :dit
+            :content-load-time :clt
+            :exception-description :exd
+            :is-exception-fatal :exf}
+ :valid-keys [:type
+              :category
+              :action
+              :label
+              :value
+              :client-id
+              :anonymize-ip
+              :data-source
+              :user-id
+              :session-control
+              :user-agent
+              :ip-override
+              :geographical
+              :cache-buster
+              :document-referrer
+              :campaign-name
+              :campaign-source
+              :campaign-medium
+              :campaign-keyword
+              :campaign-content
+              :campaign-id
+              :screen-resolution
+              :viewport-size
+              :document-encoding
+              :screen-colors
+              :user-language
+              :java-enabled
+              :flash-version
+              :document-location-url
+              :document-host-name
+              :document-path
+              :document-title
+              :screen-name
+              :content-group
+              :link-id
+              :application-name
+              :application-id
+              :application-version
+              :application-installer-id
+              :transaction-id
+              :transaction-affiliation
+              :transaction-revenue
+              :transaction-shipping
+              :transaction-tax
+              :item-name
+              :item-price
+              :item-quantity
+              :item-code
+              :item-category
+              :transaction-id
+              :affiliation
+              :revenue
+              :tax
+              :shipping
+              :coupon-code
+              :product-action-list
+              :checkout-step
+              :checkout-step-option
+              :currency-code
+              :social-network
+              :social-action
+              :social-action-target
+              :user-timing-category
+              :user-timing-time
+              :user-timing-variable-name
+              :user-timing-label
+              :page-load-time
+              :dns-time
+              :page-download-time
+              :redirect-response-time
+              :tcp-connect-time
+              :server-response-time
+              :dom-interactive-time
+              :content-load-time
+              :exception-description
+              :is-exception-fatal
+              :disabling-advertising-personalization
+              :queue-time]}
