@@ -11,5 +11,5 @@ SELECT * FROM workspace;
 
 -- :name get-workspace :? :1
 -- :doc retrieves a workspace record with given id
-SELECT * FROM workspace AS w
+SELECT * FROM workspace
 WHERE id = :id;
