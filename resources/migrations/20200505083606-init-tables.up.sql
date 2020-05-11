@@ -44,20 +44,13 @@ created_by UUID NOT NULL,
 name citext NOT NULL,
 write_key VARCHAR(254) UNIQUE NOT NULL,
 type VARCHAR(254) NOT NULL REFERENCES source_types(type),
-UNIQUE(workspace_id, name)
-);
+UNIQUE(workspace_id, name));
 
 
 --;;
-
-CREATE INDEX idx_source ON source(workspace_id, write_key);
-
---;;
-
 
 CREATE TABLE IF NOT EXISTS destination_types (
-type VARCHAR(254) UNIQUE NOT NULL PRIMARY KEY
-);
+type VARCHAR(254) UNIQUE NOT NULL PRIMARY KEY);
 
 --;;
 
@@ -72,10 +65,36 @@ modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 created_by UUID NOT NULL,
 type VARCHAR(254) NOT NULL REFERENCES destination_types(type),
 source_id NOT NULL REFERENCES source(id) ON DELETE CASCADE,
-config JSONB NOT NULL
-);
+config JSONB NOT NULL);
 
 --;;
 
-CREATE INDEX idx_destination ON destination(source_id);
+CREATE TABLE IF NOT EXISTS events (
+id UUID UNIQUE NOT NULL PRIMARY KEY,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+write_key VARCHAR(254) UNIQUE NOT NULL,
+payload JSONB NOT NULL);
 
+--;;
+
+CREATE INDEX idx_events ON events(write_key);
+
+--;;
+
+CREATE TABLE IF NOT EXISTS success_events (
+id UUID UNIQUE NOT NULL PRIMARY KEY,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+write_key VARCHAR(254) UNIQUE NOT NULL,
+request_payload JSONB NOT NULL,
+response JSONB NOT NULL,
+meta JSONB NOT NULL,);
+
+--;;
+
+CREATE TABLE IF NOT EXISTS fail_events (
+id UUID UNIQUE NOT NULL PRIMARY KEY,
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+write_key VARCHAR(254) UNIQUE NOT NULL,
+request_payload JSONB NOT NULL,
+response JSONB NOT NULL,
+meta JSONB NOT NULL,);
