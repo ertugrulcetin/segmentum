@@ -39,13 +39,11 @@ CREATE TABLE IF NOT EXISTS source (
 id UUID DEFAULT uuid_generate_v4() UNIQUE NOT NULL PRIMARY KEY,
 workspace_id UUID NOT NULL REFERENCES workspace(id),
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 created_by UUID NOT NULL,
 name citext NOT NULL,
 write_key VARCHAR(254) UNIQUE NOT NULL,
 type VARCHAR(254) NOT NULL REFERENCES source_types(type),
 UNIQUE(workspace_id, name));
-
 
 --;;
 
@@ -61,7 +59,6 @@ INSERT INTO destination_types (type) VALUES ('google_analytics');
 CREATE TABLE IF NOT EXISTS destination (
 id UUID DEFAULT uuid_generate_v4() UNIQUE NOT NULL PRIMARY KEY,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 created_by UUID NOT NULL,
 type VARCHAR(254) NOT NULL REFERENCES destination_types(type),
 source_id NOT NULL REFERENCES source(id) ON DELETE CASCADE,
