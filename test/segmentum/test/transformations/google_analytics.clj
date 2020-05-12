@@ -2,5 +2,3 @@
   (:require
    [clojure.test :refer :all]
    [segmentum.transformations.google-analytics :as google-analytics]))
-
-

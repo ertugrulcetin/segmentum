@@ -8,6 +8,7 @@
                  [org.clojure/tools.cli "1.0.194"]
                  [org.clojure/tools.logging "1.1.0"]
                  [org.clojure/core.async "1.1.587"]
+                 [org.clojure/data.json "1.0.0"]
                  [ch.qos.logback/logback-classic "1.2.3"]
                  [cheshire "5.10.0"]
                  [clojure.java-time "0.3.2"]
