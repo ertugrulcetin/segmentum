@@ -20,6 +20,15 @@
                (throw (->ModelValidationException "heyoo"))))
 
 
+(resource api-event
+          :post ["/v1/event"]
+          :content-type :json
+          :post! (fn [ctx]
+                   (let [data (clojure.walk/keywordize-keys (:request-data ctx))]
+                     (segmentum-event-handler data :google)))
+          :handle-created (fn [ctx] {:success? true}))
+
+
 (resource event
   :post ["/event/google"]
   :content-type :json
