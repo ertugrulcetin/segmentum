@@ -5,8 +5,8 @@
    [mount.core :refer [args defstate]])
   (:import (java.util UUID)))
 
-
 (defonce instance-id (str (UUID/randomUUID)))
+(defonce cores (.. Runtime getRuntime availableProcessors))
 
 
 (defstate env

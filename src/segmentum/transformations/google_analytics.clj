@@ -15,8 +15,7 @@
 
 (defn send-google-analytics [params]
   (client/post "https://www.google-analytics.com/collect"
-    {:headers h
-     :form-params params}))
+    {:headers h :form-params params}))
 
 
 (defn google-analytics-params [params mappings]
