@@ -16,11 +16,11 @@
     :google (google-analytics-handler params mappings)))
 
 
-(defn segmentum-event-handler [params integration-key]
-  (let [transform-data (-> (io/resource "transforms/analytics/google.edn")
-                         slurp
-                         edn/read-string)]
-    (->> params
+(let [transform-data (-> (io/resource "transforms/analytics/google.edn")
+                       slurp
+                       edn/read-string)]
+  (defn segmentum-event-handler [event integration-key]
+    (->> event
       (cske/transform-keys csk/->kebab-case)
       (segmentum-event-params (:valid-keys transform-data))
       (segmentum-integration-routes integration-key (:mappings transform-data)))))
