@@ -1,4 +1,4 @@
--- :name create-event! :! :n
+-- :name create-event! :insert :raw
 -- :doc creates a new event record
 INSERT INTO events (id, write_key, payload)
 VALUES (:id, :write_key, :payload);
