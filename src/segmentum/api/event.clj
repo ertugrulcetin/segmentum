@@ -14,7 +14,7 @@
   (:import (java.util UUID)))
 
 (def xf (map #(assoc % :arrived_at (System/currentTimeMillis)
-                       :id (UUID/randomUUID))))
+                :id (UUID/randomUUID))))
 (defonce stream (s/stream 1024 xf))
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
@@ -32,36 +32,35 @@
 
 (defn- write-to-db? [event bulk-events]
   (or (and (= ::timeout event)
-           (pos? (count bulk-events)))
-      (and (not= ::timeout event)
-           (= (count bulk-events) 32))))
+        (pos? (count bulk-events)))
+    (and (not= ::timeout event)
+      (= (count bulk-events) 32))))
 
 ;;TODO handle exceptions!!!
 (defn process-db-stream []
   (mc/async-loop 1 [events []]
                  ;;TODO :arrived_at ekle bunu da DB'de bir alana!
                  ;;TODO add retry-count to failed events
-                 (s/try-take! db-stream ::drained 20 ::timeout)
+    (s/try-take! db-stream ::drained 20 ::timeout)
 
-                 (fn [event]
-                   (println "Event: " event)
-                   (let [events      (if (= ::timeout event) events (conj events event))
-                         bulk-events (take 32 events)]
-                     (if (write-to-db? event bulk-events)
-                       (try
-                         (when (seq bulk-events)
-                           (log/debug "Writing events: " bulk-events)
-                           (db/query :create-events! {:events bulk-events})
-                           (d/recur (vec (drop (count bulk-events) events))))
-                         (catch Exception e
-                           (log/error e "Could not write events to DB.")
-                           (-> (drop (count bulk-events) events)
-                               (concat bulk-events)
-                               vec
-                               d/recur)))
-                       (d/recur events))))))
+    (fn [event]
+      (println "Event: " event)
+      (let [events      (if (= ::timeout event) events (conj events event))
+            bulk-events (take 32 events)]
+        (if (write-to-db? event bulk-events)
+          (try
+            (log/debug "Writing events: " bulk-events)
+            (db/query :create-events! {:events bulk-events})
+            (d/recur (vec (drop (count bulk-events) events)))
+            (catch Exception e
+              (log/error e "Could not write events to DB.")
+              (-> (drop (count bulk-events) events)
+                (concat bulk-events)
+                vec
+                d/recur)))
+          (d/recur events))))))
 
-db-stream
+
 (comment
   (dotimes [_ 1000]
     (put! {:id        (UUID/randomUUID)
@@ -72,30 +71,30 @@ db-stream
 
 (defn process-dest-stream []
   (mc/async-loop conf/cores []
-                 (s/take! stream ::drained)
+    (s/take! stream ::drained)
 
                  ;; if we got a message, run it through `f`
-                 (fn [event]
-                   (println " - Event: " event)
-                   (if (identical? ::drained event)
-                     ::drained
-                     (identity event)))
+    (fn [event]
+      (println " - Event: " event)
+      (if (identical? ::drained event)
+        ::drained
+        (identity event)))
 
-                 (fn [event]
-                   (println "New Hey: " event)
-                   (http/post "https://www.google-analytics.com/collect"
-                              {:headers h :form-params {:ev "ses"}}))
+    (fn [event]
+      (println "New Hey: " event)
+      (http/post "https://www.google-analytics.com/collect"
+        {:headers h :form-params {:ev "ses"}}))
 
                  ;; wait for the result from `f` to be realized, and
                  ;; recur, unless the stream is already drained
-                 (fn [result]
-                   (println "Result: " (select-keys result [:status :body]))
-                   (when-not (identical? ::drained result)
-                     (d/recur)))))
+    (fn [result]
+      (println "Result: " (select-keys result [:status :body]))
+      (when-not (identical? ::drained result)
+        (d/recur)))))
 
 
 (resource event-processing
-          :post ["/v1/event"]
-          :content-type :json
-          :post! #(->> % :request-data w/keywordize-keys put!)
-          :handle-created (fn [ctx] {:success? true}))
+  :post ["/v1/event"]
+  :content-type :json
+  :post! #(->> % :request-data w/keywordize-keys put!)
+  :handle-created (fn [ctx] {:success? true}))
