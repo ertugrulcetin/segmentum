@@ -7,7 +7,8 @@
             [throttler.core :refer [throttle-fn]]
             [clojure.walk :as w]
             [aleph.http :as http]
-            [kezban.core :refer :all])
+            [kezban.core :refer :all]
+            [clojure.tools.logging :as log])
   (:import (java.util UUID)))
 
 (def xf (map #(assoc % :arrived_at (System/currentTimeMillis)
@@ -39,7 +40,7 @@
                                 (= (count bulk-events) 32)))
                        (do
                          ;;write db
-                         (println "Writing events: " bulk-events)
+                         (log/debug "Writing events: " bulk-events)
                          (d/recur (vec (drop (count bulk-events) events))))
 
                        :else (d/recur events))))))
