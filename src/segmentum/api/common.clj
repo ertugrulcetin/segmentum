@@ -4,6 +4,9 @@
             [liberator.representation :refer [ring-response]]
             [clojure.tools.logging :as log]))
 
+(def ^:dynamic *current-user* (atom nil))
+(def ^:dynamic *destinations* (atom []))
+
 
 (defexception ModelValidationException)
 
