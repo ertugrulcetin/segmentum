@@ -13,14 +13,17 @@
             [clojure.tools.logging :as log])
   (:import (java.util UUID)))
 
+
 (def xf (map #(assoc % :arrived_at (System/currentTimeMillis)
                 :id (UUID/randomUUID))))
 (defonce stream (s/stream 1024 xf))
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
+
 (def db-xf (map #(vector (:id %) (:write_key %) (:payload %))))
 (defonce db-stream (s/stream 1024 db-xf))
 (defonce dest-stream (s/stream 1024))
+
 
 (s/connect stream db-stream)
 ;;TODO backpressure'a neden oluyor
@@ -35,6 +38,7 @@
         (pos? (count bulk-events)))
     (and (not= ::timeout event)
       (= (count bulk-events) 32))))
+
 
 ;;TODO handle exceptions!!!
 (defn process-db-stream []
@@ -51,9 +55,10 @@
           (try
             (log/debug "Writing events: " bulk-events)
             (db/query :create-events! {:events bulk-events})
-            (d/recur (vec (drop (count bulk-events) events)))
+            (->> events (drop (count bulk-events)) vec d/recur)
             (catch Exception e
-              (log/error e "Could not write events to DB.")
+              (log/error e "Could not write events to DB." bulk-events)
+              ;;TODO belki de tekrar dongueye sokmamaliyiz? belki failed channel'a atmaliyiz
               (-> (drop (count bulk-events) events)
                 (concat bulk-events)
                 vec
