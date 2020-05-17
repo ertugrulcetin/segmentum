@@ -1,0 +1,138 @@
+[{:old-path [:message :type]
+  :new-path {:ga [:t]}}
+ {:old-path [:message :event :eventCategory]
+  :new-path {:ga [:ec]}}
+ {:old-path [:message :event :eventAction]
+  :new-path {:ga [:ea]}}
+ {:old-path [:message :event :eventLabel]
+  :new-path {:ga [:el]}}
+ {:old-path [:message :event :eventValue]
+  :new-path {:ga [:ev]}}
+ {:old-path [:message :user :clientId]
+  :new-path {:ga [:cid]}}
+ {:old-path [:message :user :userId]
+  :new-path {:ga [:uid]}}
+ {:old-path [:message :context :userAgent]
+  :new-path {:ga [:ua]}}
+ {:old-path [:message :context :sessionControl]
+  :new-path {:ga [:sc]}}
+ {:old-path [:message :context :ip]
+  :new-path {:ga [:uip]}}
+ {:old-path [:message :context :userLanguage]
+  :new-path {:ga [:ul]}}
+ {:old-path [:message :context :documentEncoding]
+  :new-path {:ga [:de]}}
+ {:old-path [:message :context :javaEnabled]
+  :new-path {:ga [:je]}}
+ {:old-path [:message :context :flashVersion]
+  :new-path {:ga [:fl]}}
+ {:old-path [:message :content :documentLocationUrl]
+  :new-path {:ga [:dl]}}
+ {:old-path [:message :content :documentHostName]
+  :new-path {:ga [:dh]}}
+ {:old-path [:message :content :documentPath]
+  :new-path {:ga [:dp]}}
+ {:old-path [:message :content :documentTitle]
+  :new-path {:ga [:dt]}}
+ {:old-path [:message :content :screenName]
+  :new-path {:ga [:cd]}}
+ {:old-path [:message :content :linkId]
+  :new-path {:ga [:linkid]}}
+ {:old-path [:message :channel]
+  :new-path {:ga [:ds]}}
+ {:old-path [:message :context :anonymousId]
+  :new-path {:ga [:aip]}}
+ {:old-path [:message :context :disablingAdvertisingPersonalization]
+  :new-path {:ga [:npa]}}
+ {:old-path [:message :context :queueTime]
+  :new-path {:ga [:qt]}}
+ {:old-path [:message :context :cacheBuster]
+  :new-path {:ga [:z]}}
+ {:old-path [:message :context :geographical]
+  :new-path {:ga [:geoid]}}
+ {:old-path [:message :trafficSources :documentReferrer]
+  :new-path {:ga [:dr]}}
+ {:old-path [:message :trafficSources :campaignName]
+  :new-path {:ga [:cn]}}
+ {:old-path [:message :trafficSources :campaignSource]
+  :new-path {:ga [:cs]}}
+ {:old-path [:message :trafficSources :campaignMedium]
+  :new-path {:ga [:cm]}}
+ {:old-path [:message :trafficSources :campaignKeyword]
+  :new-path {:ga [:ck]}}
+ {:old-path [:message :trafficSources :campaignContent]
+  :new-path {:ga [:cc]}}
+ {:old-path [:message :trafficSources :campaignId]
+  :new-path {:ga [:ci]}}
+ {:old-path [:message :screen :resolution]
+  :new-path {:ga [:sr]}}
+ {:old-path [:message :screen :viewportSize]
+  :new-path {:ga [:vp]}}
+ {:old-path [:message :screen :colors]
+  :new-path {:ga [:sd]}}
+ {:old-path [:message :app :applicationName]
+  :new-path {:ga [:an]}}
+ {:old-path [:message :app :applicationId]
+  :new-path {:ga [:aid]}}
+ {:old-path [:message :app :applicationVersion]
+  :new-path {:ga [:av]}}
+ {:old-path [:message :app :applicationInstallerId]
+  :new-path {:ga [:aiid]}}
+ {:old-path [:message :eCommerce :transactionId]
+  :new-path {:ga [:ti]}}
+ {:old-path [:message :eCommerce :transactionAffiliation]
+  :new-path {:ga [:ta]}}
+ {:old-path [:message :eCommerce :transactionRevenue]
+  :new-path {:ga [:tr]}}
+ {:old-path [:message :eCommerce :transactionShipping]
+  :new-path {:ga [:ts]}}
+ {:old-path [:message :eCommerce :itemName]
+  :new-path {:ga [:in]}}
+ {:old-path [:message :eCommerce :itemPrice]
+  :new-path {:ga [:ip]}}
+ {:old-path [:message :eCommerce :itemQuantity]
+  :new-path {:ga [:iq]}}
+ {:old-path [:message :eCommerce :itemCode]
+  :new-path {:ga [:ic]}}
+ {:old-path [:message :eCommerce :itemCategory]
+  :new-path {:ga [:iv]}}
+ {:old-path [:message :eCommerce :transactionTax]
+  :new-path {:ga [:tt]}}
+ {:old-path [:message :socialInteractions :socialNetwork]
+  :new-path {:ga [:sn]}}
+ {:old-path [:message :socialInteractions :socialAction]
+  :new-path {:ga [:sa]}}
+ {:old-path [:message :socialInteractions :socialActionTarget]
+  :new-path {:ga [:st]}}
+ {:old-path [:message :timing :userTimingCategory]
+  :new-path {:ga [:utc]}}
+ {:old-path [:message :timing :userTimingTime]
+  :new-path {:ga [:utt]}}
+ {:old-path [:message :timing :userTimingVariableName]
+  :new-path {:ga [:utv]}}
+ {:old-path [:message :timing :userTimingLabel]
+  :new-path {:ga [:utl]}}
+ {:old-path [:message :timing :domInteractiveTime]
+  :new-path {:ga [:dit]}}
+ {:old-path [:message :timing :contentLoadTime]
+  :new-path {:ga [:clt]}}
+ {:old-path [:message :timing :dnsTime]
+  :new-path {:ga [:dns]}}
+ {:old-path [:message :timing :pageDownloadTime]
+  :new-path {:ga [:pdt]}}
+ {:old-path [:message :timing :redirectResponseTime]
+  :new-path {:ga [:rrt]}}
+ {:old-path [:message :timing :tcpConnectionTime]
+  :new-path {:ga [:tcp]}}
+ {:old-path [:message :timing :serverResponseTime]
+  :new-path {:ga [:srt]}}
+ {:old-path [:message :timing :pageLoadTime]
+  :new-path {:ga [:plt]}}
+ {:old-path [:message :exceptions :exceptionDescription]
+  :new-path {:ga [:exd]}}
+ {:old-path [:message :exceptions :isExceptionFatal]
+  :new-path {:ga [:exf]}}
+ {:old-path [:destination :config :trackingID]
+  :new-path {:ga [:tid]}}
+ {:old-path [:destination :config :version]
+  :new-path {:ga [:v]}}]

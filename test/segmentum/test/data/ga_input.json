@@ -4,114 +4,105 @@
       "channel": "web",
       "context": {
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
         "ip": "0.0.0.0",
+        "anonymizeIp": 0,
+        "sessionControl": "start",
+        "documentEncoding": "UTF-8",
+        "userLanguage": "en-us",
+        "javaEnabled": "1",
+        "flashVersion": "10 1 r103",
+        "disablingAdvertisingPersonalization": 0,
+        "queueTime": 560,
+        "geographical": "US",
+        "cacheBuster": "123124124124",
         "os": {
           "name": "",
           "version": ""
         },
         "screen": {
-          "density": 2
+          "resolution": "800x600",
+          "viewportSize": "123x456",
+          "colors": "24-bits"
         }
+      },
+      "trafficSources": {
+        "documentReferrer": "http://example.com",
+        "campaignName": "(direct)",
+        "campaignSource": "(direct)",
+        "campaignMedium": "organic",
+        "campaignKeyword": "Blue shoes",
+        "campaignContent": "content",
+        "campaignId": "ID123"
+      },
+      "app": {
+        "applicationName": "App",
+        "applicationId": "com.segmentum.app",
+        "applicationVersion": "1.2",
+        "applicationInstallerId": "com.segmentum.var"
+      },
+      "content": {
+        "documentLocationUrl": "https://segmentum/home",
+        "documentHostName": "segmentum.com",
+        "documentPath": "/home",
+        "documentTitle": "Preview",
+        "screenName": "High Scores",
+        "linkId": "nav_bar"
+      },
+      "event": {
+        "eventCategory": "category",
+        "eventAction": "action",
+        "eventLabel": "label",
+        "eventValue": "44"
+      },
+      "eCommerce": {
+        "transactionId": "0D111",
+        "transactionAffiliation": "Member",
+        "transactionRevenue": "15.46",
+        "transactionShipping": "4.50",
+        "transactionTax": "11.23",
+        "itemName": "shoe",
+        "itemPrice": "3.50",
+        "itemQuantity": 4,
+        "itemCode": "sku34",
+        "itemCategory": "Blue"
+      },
+      "socialInteractions": {
+        "socialNetwork": "facebook",
+        "socialAction": "like",
+        "socialActionTarget": "http://foo.com"
+      },
+      "timing": {
+        "userTimingCategory": "category",
+        "userTimingVariableName": "lookup",
+        "userTimingTime": 123,
+        "userTimingLabel": "label",
+        "pageLoadTime": 3456,
+        "dnsTime": 45,
+        "pageDownloadTime": 400,
+        "redirectResponseTime":500,
+        "tcpConnectionTime": 400,
+        "serverResponseTime": 300,
+        "domInteractiveTime": 300,
+        "contentLoadTime": 300
+      },
+      "exceptions": {
+        "exceptionDescription": "databaseerror",
+        "isExceptionFatal": 0
+      },
+      "user": {
+        "clientId": "123",
+        "userId": "3445"
       },
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "123456",
-      "integrations": {
-        "All": true
-      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
-      "Config": {
-        "trackingID": "abcd"
-      },
-      "Enabled": true
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "traits": {
-          "email": "sayan@gmail.com"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "page",
-      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-      "originalTimestamp": "2019-10-14T11:15:18.299Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "12345",
-      "properties": {
-        "path": "/abc",
-        "referrer": "",
-        "search": "",
-        "title": "",
-        "url": ""
-      },
-      "integrations": {
-        "All": true
-      },
-      "name": "ApplicationLoaded",
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "trackingID": "abcd"
-      },
-      "Enabled": true
-    }
-  },
-  {
-    "message": {
-      "channel": "web",
-      "context": {
-        "traits": {
-          "email": "sayan@gmail.com"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
-        }
-      },
-      "type": "track",
-      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-      "originalTimestamp": "2019-10-14T11:15:18.300Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "12345",
-      "event": "test track event GA3",
-      "properties": {
-        "category": "test-category",
-        "user_actual_role": "system_admin, system_user",
-        "user_actual_id": 12345
-      },
-      "integrations": {
-        "All": true
-      },
-      "sentAt": "2019-10-14T11:15:53.296Z"
-    },
-    "destination": {
-      "Config": {
-        "trackingID": "UA-149602794-1"
-      },
-      "Enabled": true
+      "config": {
+        "trackingID": "UA-165839048-1",
+        "version": "1"
+      }
     }
   }
 ]
