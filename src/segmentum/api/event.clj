@@ -17,12 +17,16 @@
 (def xf (map #(assoc % :arrived_at (System/currentTimeMillis)
                 :id (UUID/randomUUID))))
 (defonce stream (s/stream 1024 xf))
+
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
 
 (def db-xf (map #(vector (:id %) (:write_key %) (:payload %))))
 (defonce db-stream (s/stream 1024 db-xf))
 (defonce dest-stream (s/stream 1024))
+
+(def failed-write-xf (map #(assoc % :retry 0)))
+(defonce failed-to-write-db-stream (s/stream 512 failed-write-xf))
 
 
 (s/connect stream db-stream)
@@ -40,15 +44,51 @@
       (= (count bulk-events) 32))))
 
 
-;;TODO handle exceptions!!!
+(defn- get-db-fn-by-type [type]
+  (case type
+    :event (partial db/query :create-event!)))
+
+
+(defn process-failed-db-writes []
+  (mc/async-loop 1 [events []]
+    (s/try-take! failed-to-write-db-stream ::drained 10000 ::timeout)
+
+    (fn [event]
+      (cond
+        (= event ::timeout)
+        (if-let [event (first events)]
+          (try
+            (if (>= (:retry event) 3)
+              (do
+                (log/info "Event: " event " is going to be discarded due to exceeding number of tries.")
+                (d/recur (vec (rest events))))
+              (do
+                ((get-db-fn-by-type (:type event)) (dissoc event :type))
+                (d/recur (vec (rest events)))))
+            (catch Exception e
+              (log/error e "Could not write event to DB." event)
+              (d/recur (vec (rest (conj events (update event :retry inc)))))))
+          (d/recur []))
+
+        (not= event ::drained)
+        (try
+          ((get-db-fn-by-type (:type event)) (dissoc event :type))
+          (log/info "Failed db write successfully written to DB.")
+          (d/recur events)
+          (catch Exception e
+            (log/error e "Could not write event to DB.")
+            (d/recur (conj events (update event :retry inc)))))
+
+        :else (d/recur events)))))
+
+
+
 (defn process-db-stream []
   (mc/async-loop 1 [events []]
                  ;;TODO :arrived_at ekle bunu da DB'de bir alana!
-                 ;;TODO add retry-count to failed events
     (s/try-take! db-stream ::drained 20 ::timeout)
 
     (fn [event]
-      (println "Event: " event)
       (let [events      (if (= ::timeout event) events (conj events event))
             bulk-events (take 32 events)]
         (if (write-to-db? event bulk-events)
@@ -58,20 +98,23 @@
             (->> events (drop (count bulk-events)) vec d/recur)
             (catch Exception e
               (log/error e "Could not write events to DB." bulk-events)
-              ;;TODO belki de tekrar dongueye sokmamaliyiz? belki failed channel'a atmaliyiz
-              (-> (drop (count bulk-events) events)
-                (concat bulk-events)
-                vec
-                d/recur)))
+              (doseq [[id write-key payload] bulk-events]
+                (s/put! failed-to-write-db-stream {:id        id
+                                                   :write_key write-key
+                                                   :payload   payload
+                                                   :type      :event}))
+              (-> (drop (count bulk-events) events) vec d/recur)))
           (d/recur events))))))
 
 
 (comment
+  (db/query :create-event! {:id (UUID/randomUUID) :payload {:data 23} :write_key "12312asd2a"})
   (dotimes [_ 1000]
     (put! {:id        (UUID/randomUUID)
            :write_key (nano-id 32)
            :payload   {:data (rand-int 1000)}}))
-  (process-db-stream))
+  (process-db-stream)
+  (process-failed-db-writes))
 
 
 (defn process-dest-stream []
