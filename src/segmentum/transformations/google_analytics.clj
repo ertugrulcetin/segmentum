@@ -4,6 +4,7 @@
             [clojure.java.io :as io]
             [kezban.core :refer :all]))
 
+(def api-url "https://www.google-analytics.com/collect")
 
 (defay mappings (-> (io/resource "transforms/analytics/google.edn")
                   slurp
