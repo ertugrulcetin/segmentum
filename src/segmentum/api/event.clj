@@ -51,22 +51,21 @@
 
 
 (defn- process-failed-db-writes []
-  (d/loop [events []]
-    (d/chain
-      (d/timeout!
-        (s/take! failed-write-stream ::drained)
-        1000
-        ::timeout)
-      (fn [data]
-        (if-not (#{::drained ::timeout} data)
-          (try-write-to-db data events)
-          (if-let [f-event (first events)]
-            (if (>= (:retry f-event) 3)
-              (do
-                (log/warn "Discarding event due to max number of retry count." f-event)
-                (-> events rest vec d/recur))
-              (try-write-to-db f-event events false))
-            (d/recur [])))))))
+  (mc/async-loop 1 [events []]
+    (d/timeout!
+      (s/take! failed-write-stream ::drained)
+      1000
+      ::timeout)
+    (fn [data]
+      (if-not (#{::drained ::timeout} data)
+        (try-write-to-db data events)
+        (if-let [f-event (first events)]
+          (if (>= (:retry f-event) 3)
+            (do
+              (log/warn "Discarding event due to max number of retry count." f-event)
+              (-> events rest vec d/recur))
+            (try-write-to-db f-event events false))
+          (d/recur []))))))
 
 
 (defn- process-db-stream []
@@ -89,7 +88,7 @@
 
 
 (comment
-  (dotimes [_ 2]
+  (dotimes [_ 5000]
     (put! {:id        (UUID/randomUUID)
            :write_key (nano-id 32)
            :payload   {:data (rand-int 1000)}}))
