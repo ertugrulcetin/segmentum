@@ -85,7 +85,7 @@
     (s/try-take! db-stream ::drained 20 ::timeout)
 
     (fn [event]
-      (let [events      (if (= ::timeout event) events (conj events event))
+      (let [events      (if (#{::timeout ::drained} event) events (conj events event))
             bulk-events (take 32 events)]
         (if (write-to-db? event bulk-events)
           (try
@@ -109,7 +109,7 @@
                             :arrived_at (Date.)
                             :payload {:data 23}
                             :write_key "12312asd2a"})
-  (dotimes [_ 10]
+  (dotimes [_ 2]
     (put! {:id        (UUID/randomUUID)
            :write_key (nano-id 32)
            :payload   {:data (rand-int 1000)}}))
