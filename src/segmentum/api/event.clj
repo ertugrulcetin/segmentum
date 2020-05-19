@@ -17,7 +17,6 @@
 (def xf (map #(assoc % :arrived_at (System/currentTimeMillis)
                 :id (UUID/randomUUID))))
 (defonce stream (s/stream 1024 xf))
-
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
 
@@ -80,7 +79,6 @@
             (d/recur (conj events (update event :retry inc)))))
 
         :else (d/recur events)))))
-
 
 
 (defn process-db-stream []
