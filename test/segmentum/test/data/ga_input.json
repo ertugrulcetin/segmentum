@@ -1,5 +1,27 @@
 [
   {
+    "message":{
+      "channel":"web",
+      "context":{
+        "userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+      },
+      "type":"event",
+      "event":{
+        "eventCategory":"testCategory",
+        "eventAction":"testAction"
+      },
+      "user":{
+        "clientId":"35009a79-1a05-49d7-b876-2b884d0f825b"
+      }
+    },
+    "destination":{
+      "config":{
+        "trackingID":"UA-167084592-1",
+        "version":"1"
+      }
+    }
+  },
+  {
     "message": {
       "channel": "web",
       "context": {

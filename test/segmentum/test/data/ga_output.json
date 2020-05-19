@@ -1,23 +1,12 @@
 [
   {
-    "version": "1",
-    "type": "REST",
-    "method": "GET",
-    "endpoint": "https://www.google-analytics.com/collect",
-    "headers": {},
-    "userId": "12345",
-    "params": {
-      "v": "1",
-      "t": "pageview",
-      "tid": "abcd",
-      "cid": "12345",
-      "dt": "",
-      "dl": "",
-      "dp": "/abc",
-      "dr": "",
-      "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-      "uip": "0.0.0.0"
-    },
-    "statusCode": 200
+    "t": "event",
+    "ec": "testCategory",
+    "ea": "testAction",
+    "cid": "35009a79-1a05-49d7-b876-2b884d0f825b",
+    "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+    "ds": "web",
+    "tid": "UA-167084592-1",
+    "v": "1"
   }
 ]

@@ -9,10 +9,10 @@
                      edn/read-string))
 
 
-(defn segmentum-integration-routes [integration-key mappings params]
+(defn segmentum-integration-routes [params integration-key]
   (case integration-key
-    :google (google/handler params mappings)))
+    :google (google/handler params mappings-data)))
 
 
 (defn segmentum-event-handler [params integration-key]
-  (segmentum-integration-routes integration-key mappings-data params))
+  (segmentum-integration-routes params integration-key))

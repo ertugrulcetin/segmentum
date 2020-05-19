@@ -8,6 +8,6 @@
     {:form-params params}))
 
 
-(defn ^:transform handler [params mapping-list]
+(defn ^:transformer handler [params mappings-data]
   (send-google-analytics
-    (helper/data-transform mapping-list params)))
+    (helper/data-transform mappings-data params :ga)))
