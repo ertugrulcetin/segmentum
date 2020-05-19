@@ -1,7 +1,7 @@
 (ns segmentum.transformations.helper)
 
-(defn data-transform [mapping-list incoming-data integration-key]
-  (loop [mapping mapping-list
+(defn data-transform [mappings-data incoming-data integration-key]
+  (loop [mapping mappings-data
          transform {}]
     (if (empty? mapping)
       transform
