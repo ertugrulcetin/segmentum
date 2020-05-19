@@ -11,21 +11,20 @@
             [kezban.core :refer :all]
             [nano-id.core :refer [nano-id]]
             [clojure.tools.logging :as log])
-  (:import (java.util UUID)))
+  (:import (java.util UUID Date)))
 
 
-(def xf (map #(assoc % :arrived_at (System/currentTimeMillis)
-                :id (UUID/randomUUID))))
+(def xf (map #(assoc % :arrived_at (Date.) :id (UUID/randomUUID))))
 (defonce stream (s/stream 1024 xf))
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
 
-(def db-xf (map #(vector (:id %) (:write_key %) (:payload %))))
+(def db-xf (map #(vector (:id %) (:write_key %) (:payload %) (:arrived_at %))))
 (defonce db-stream (s/stream 1024 db-xf))
 (defonce dest-stream (s/stream 1024))
 
 (def failed-write-xf (map #(assoc % :retry 0)))
-(defonce failed-to-write-db-stream (s/stream 512 failed-write-xf))
+(defonce failed-write-stream (s/stream 512 failed-write-xf))
 
 
 (s/connect stream db-stream)
@@ -50,7 +49,7 @@
 
 (defn process-failed-db-writes []
   (mc/async-loop 1 [events []]
-    (s/try-take! failed-to-write-db-stream ::drained 10000 ::timeout)
+    (s/try-take! failed-write-stream ::drained 10000 ::timeout)
 
     (fn [event]
       (cond
@@ -83,7 +82,6 @@
 
 (defn process-db-stream []
   (mc/async-loop 1 [events []]
-                 ;;TODO :arrived_at ekle bunu da DB'de bir alana!
     (s/try-take! db-stream ::drained 20 ::timeout)
 
     (fn [event]
@@ -96,18 +94,22 @@
             (->> events (drop (count bulk-events)) vec d/recur)
             (catch Exception e
               (log/error e "Could not write events to DB." bulk-events)
-              (doseq [[id write-key payload] bulk-events]
-                (s/put! failed-to-write-db-stream {:id        id
-                                                   :write_key write-key
-                                                   :payload   payload
-                                                   :type      :event}))
+              (doseq [[id write-key payload arrived-at] bulk-events]
+                (s/put! failed-write-stream {:id               id
+                                             :write_key  write-key
+                                             :arrived_at arrived-at
+                                             :payload    payload
+                                             :type       :event}))
               (-> (drop (count bulk-events) events) vec d/recur)))
           (d/recur events))))))
 
 
 (comment
-  (db/query :create-event! {:id (UUID/randomUUID) :payload {:data 23} :write_key "12312asd2a"})
-  (dotimes [_ 1000]
+  (db/query :create-event! {:id (UUID/randomUUID)
+                            :arrived_at (Date.)
+                            :payload {:data 23}
+                            :write_key "12312asd2a"})
+  (dotimes [_ 10]
     (put! {:id        (UUID/randomUUID)
            :write_key (nano-id 32)
            :payload   {:data (rand-int 1000)}}))
