@@ -1,5 +1,6 @@
 (ns segmentum.transformations.google-analytics
-  (:require [clojure.set :as set]
+  (:require [segmentum.transformations.helper :as helper]
+            [clojure.set :as set]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [kezban.core :refer :all]))
@@ -12,6 +13,7 @@
                   edn/read-string))
 
 
+;;TODO ???
 (defn transform [event opts]
   (-> event
     (set/rename-keys @mappings)
@@ -23,4 +25,5 @@
   ([event]
    (handler event {}))
   ([event opts]
-   (transform event opts)))
+   ;;TODO opts ekle!
+   (helper/data-transform @mappings event :ga)))
