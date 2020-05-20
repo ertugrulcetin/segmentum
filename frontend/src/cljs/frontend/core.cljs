@@ -3,11 +3,10 @@
    [reagent.core :as reagent]
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
-   [frontend.events :as events]
+   [frontend.common.events :as common-events]
    [frontend.routes :as routes]
    [frontend.views :as views]
-   [frontend.config :as config]
-   ))
+   [frontend.config :as config]))
 
 
 (defn dev-setup []
@@ -22,6 +21,6 @@
 
 (defn init []
   (routes/app-routes)
-  (re-frame/dispatch-sync [::events/initialize-db])
+  (re-frame/dispatch-sync [::common-events/initialize-db])
   (dev-setup)
   (mount-root))
