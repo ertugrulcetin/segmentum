@@ -1,13 +1,26 @@
 (ns segmentum.transformations.google-analytics
-  (:require [clj-http.client :as client]
-            [segmentum.transformations.helper :as helper]))
+  (:require [clojure.set :as set]
+            [clojure.edn :as edn]
+            [clojure.java.io :as io]
+            [kezban.core :refer :all]))
+
+(def api-url "https://www.google-analytics.com/collect")
 
 
-(defn send-google-analytics [params]
-  (client/post "https://www.google-analytics.com/collect"
-    {:form-params params}))
+(defay mappings (-> (io/resource "transforms/analytics.edn")
+                  slurp
+                  edn/read-string))
 
 
-(defn ^:transformer handler [params mappings-data]
-  (send-google-analytics
-    (helper/data-transform mappings-data params :ga)))
+(defn transform [event opts]
+  (-> event
+    (set/rename-keys @mappings)
+    (merge {:v   (:google-analytics-version opts)
+            :tid (:google-tracking-id opts)})))
+
+
+(defn ^{:transformer true} handler
+  ([event]
+   (handler event {}))
+  ([event opts]
+   (transform event opts)))

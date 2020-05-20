@@ -3,7 +3,8 @@
             [patika.core :as p]
             [compojure.core :as c]
             [compojure.route :as r]
-            [segmentum.transformations.analytics :refer [segmentum-event-handler]]))
+            [segmentum.transformations.google-analytics :as transformation.ga]))
+
 
 (resource hello
   :get ["/"]
@@ -17,12 +18,13 @@
   :handle-ok (fn [ctx]
                (throw (->ModelValidationException "heyoo"))))
 
+
 (resource event
   :post ["/event/google"]
   :content-type :json
   :post! (fn [ctx]
            (let [event (clojure.walk/keywordize-keys (:request-data ctx))]
-             (segmentum-event-handler event :google)))
+             (transformation.ga/handler event)))
   :handle-created (fn [ctx] {:success? true}))
 
 
