@@ -11,7 +11,7 @@
                  [clj-commons/secretary "1.2.4"]]
 
   :plugins [[lein-shadow "0.2.0"]
-
+            [lein-less "1.7.5"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.9.0"
@@ -19,6 +19,9 @@
   :source-paths ["src/clj" "src/cljs"]
 
   :test-paths   ["test/cljs"]
+
+  :less {:source-paths ["less"]
+         :target-path  "resources/public/css"}
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
