@@ -6,6 +6,7 @@
             [segmentum.transformations.google-analytics :as trans.ga]
             [manifold.stream :as s]
             [manifold.deferred :as d]
+            [byte-streams :as bs]
             [throttler.core :refer [throttle-fn]]
             [clojure.walk :as w]
             [aleph.http :as http]
@@ -36,7 +37,9 @@
 
 (defn- get-db-fn-by-type [type]
   (let [k (case type
-            :raw :create-event!)]
+            :raw :create-event!
+            :fail :create-fail-event!
+            :success :create-success-event!)]
     (partial db/query k)))
 
 
@@ -92,6 +95,38 @@
     (s/batch 32 100 db-stream)))
 
 
+(defn- result->event-model [result]
+  {:write_key       (-> result :event :write_key)
+   ;;TODO destination_id
+   :destination_id  1
+   :arrived_at      (-> result :event :arrived_at)
+   :event_id        (-> result :event :id)
+   :request_payload (:payload result)
+   :response        (dissoc result :event :payload)})
+
+
+(defn- process-fail-result
+  ([result]
+   (process-fail-result result false))
+  ([result timeout?]
+   (let [event (assoc (result->event-model result) :timeout timeout?)]
+     (try
+       (db/query :create-fail-event! event)
+       (catch Exception e
+         (log/error e "Failed to write fail event to DB - " event)
+         (s/put! failed-write-stream (assoc event :type :fail)))))))
+
+
+(defn- process-success-result [result]
+  (let [event (result->event-model result)]
+    (try
+      (db/query :create-success-event! event)
+      (catch Exception e
+        (log/error e "Failed to write success event to DB - " event)
+        (s/put! failed-write-stream (assoc event :type :success))))))
+
+
+;;TODO ilk eventi islemiyor status falan nil donuyor, sonrakiler calisiyor...
 (defn- process-dest-stream []
   (let [parallelism (if (:prod env) conf/cores 1)]
     (mc/async-loop parallelism []
@@ -101,23 +136,47 @@
         (log/info " - Event: " event)
         (if (identical? ::drained event)
           ::drained
-          (d/timeout!
-            (d/chain'
-              (http/post "https://www.google-analytics.com/collect"
-                {:form-params (trans.ga/handler event)})
-              #(assoc % :event event))
-            1000
-            {::timeout true :event event})))
+                       ;;TODO find suitable handler according to event data
+          (let [{:keys [url params]} (trans.ga/handler event)]
+            (d/timeout!
+              (d/chain'
+                (http/post url {:form-params params})
+                #(assoc % :event event :payload params))
+              1000
+              {::timeout true
+               :event    event
+               :payload  params}))))
+
+      (fn [result]
+        (if (and (not (::timeout result)) (not= ::drained result))
+          (update result :body bs/to-string)
+          result))
 
       (fn [result]
         (log/info "Result: " result)
         (when-not (identical? ::drained result)
-          (let [{:keys [status body request-time event]} result]
-            (log/info "Status: " status " - Body: " body))
+          (cond
+            (::timeout result)
+            (process-fail-result result true)
+
+            (<= 200 (:status result) 299)
+            (process-success-result result)
+
+            :else (process-fail-result result))
           (d/recur))))))
 
 
 (comment
+  (let [e      {:id         #uuid "598f7f22-f8b7-4b14-9923-e7eb4c64dc5b"
+                :write_key  "s4SjR-KgN1KBLMJkMLVUluL0y-rS9oZA"
+                :payload    {:data 291}
+                :arrived_at #inst "2020-05-21T17:41:11.142-00:00"}
+        result @(http/post "https://www.google-analytics.com/collect"
+                  {:form-params e})])
+
+  (let [r @(http/get "https://jsonplaceholder.typicode.com/todos/1")]
+    (byte-streams/to-string (:body r)))
+
   (dotimes [_ 1]
     (put! {:id        (UUID/randomUUID)
            :write_key (nano-id 32)

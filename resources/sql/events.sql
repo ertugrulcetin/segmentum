@@ -8,3 +8,15 @@ VALUES (:id, :write_key, :payload, :arrived_at);
 -- :doc creates multiple event records
 INSERT INTO events (id, write_key, payload, arrived_at)
 VALUES :tuple*:events;
+
+
+-- :name create-success-event! :insert :raw
+-- :doc creates a new success event record
+INSERT INTO success_events (write_key, destination_id, arrived_at, event_id, request_payload, response)
+VALUES (:write_key, :destination_id, :arrived_at, :event_id, :request_payload, :response);
+
+
+-- :name create-fail-event! :insert :raw
+-- :doc creates a new failed event record
+INSERT INTO fail_events (write_key, destination_id, arrived_at, event_id, request_payload, response, timeout)
+VALUES (:write_key, :destination_id, :arrived_at, :event_id, :request_payload, :response, :timeout);
