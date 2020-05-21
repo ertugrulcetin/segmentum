@@ -31,7 +31,7 @@
 
 
 (s/connect stream db-stream)
-;;TODO backpressure'a neden oluyor
+;;TODO check backpressure!
 (s/connect stream dest-stream)
 
 
@@ -64,6 +64,7 @@
       (s/take! failed-write-stream ::drained)
       1000
       ::timeout)
+
     (fn [data]
       (if-not (#{::drained ::timeout} data)
         (try-write-to-db data events)
