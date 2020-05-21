@@ -25,8 +25,8 @@
     (re-frame/dispatch [::navigation-events/set-active-panel :home-panel]))
 
 
-  (defroute "/about" []
-    (re-frame/dispatch [::navigation-events/set-active-panel :about-panel]))
+  (defroute "/login" []
+    (re-frame/dispatch [::navigation-events/set-active-panel :login-panel]))
 
 
   ;; --------------------
