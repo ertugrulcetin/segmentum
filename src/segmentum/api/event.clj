@@ -16,7 +16,7 @@
 
 
 (def xf (map #(assoc % :arrived_at (Date.) :id (UUID/randomUUID))))
-(defonce stream (s/stream 1024 xf))
+(defonce stream (s/stream* {:permanent? true :buffer-size 1024 :xform xf}))
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
 
