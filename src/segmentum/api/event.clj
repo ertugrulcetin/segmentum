@@ -35,8 +35,9 @@
 
 
 (defn- get-db-fn-by-type [type]
-  (case type
-    :raw (partial db/query :create-event!)))
+  (let [k (case type
+            :raw :create-event!)]
+    (partial db/query k)))
 
 
 (defn- try-write-to-db
@@ -97,20 +98,16 @@
       (s/take! dest-stream ::drained)
 
       (fn [event]
-        (println " - Event: " event)
+        (log/info " - Event: " event)
         (if (identical? ::drained event)
           ::drained
-          (identity event)))
-
-      (fn [event]
-        (log/info "New event: " event)
-        (d/timeout!
-          (d/chain'
-            (http/post "https://www.google-analytics.com/collect"
-              {:form-params (trans.ga/handler event)})
-            #(assoc % :event event))
-          1000
-          {::timeout true :event event}))
+          (d/timeout!
+            (d/chain'
+              (http/post "https://www.google-analytics.com/collect"
+                {:form-params (trans.ga/handler event)})
+              #(assoc % :event event))
+            1000
+            {::timeout true :event event})))
 
       (fn [result]
         (log/info "Result: " result)
