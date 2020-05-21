@@ -26,4 +26,5 @@
    (handler event {}))
   ([event opts]
    ;;TODO opts ekle!
-   (helper/data-transform @mappings event :ga)))
+   {:url    api-url
+    :params (helper/data-transform @mappings event :ga)}))
