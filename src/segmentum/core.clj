@@ -2,10 +2,11 @@
   (:require
    [segmentum.handler :as handler]
    [segmentum.nrepl :as nrepl]
-   [luminus.http-server :as http]
-   [luminus-migrations.core :as migrations]
    [segmentum.db.migration :as mig]
    [segmentum.config :refer [env]]
+   [segmentum.api.event]
+   [luminus.http-server :as http]
+   [luminus-migrations.core :as migrations]
    [clojure.tools.cli :refer [parse-opts]]
    [clojure.tools.logging :as log]
    [mount.core :as mount])
