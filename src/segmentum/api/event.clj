@@ -12,10 +12,13 @@
             [aleph.http :as http]
             [kezban.core :refer :all]
             [nano-id.core :refer [nano-id]]
-            [clojure.tools.logging :as log])
+            [clojure.tools.logging :as log]
+            [clojure.data.json :as json]
+            [mount.core :refer [defstate]])
   (:import (java.util UUID Date)))
 
 
+;;TODO randomUUID, what if other instances produce the same ID?
 (def xf (map #(assoc % :arrived_at (Date.) :id (UUID/randomUUID))))
 (defonce stream (s/stream* {:permanent? true :buffer-size 1024 :xform xf}))
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
@@ -28,11 +31,6 @@
 
 (def fail-xf (map #(assoc % :retry 0)))
 (defonce failed-write-stream (s/stream 512 fail-xf))
-
-
-(s/connect stream db-stream)
-;;TODO check backpressure!
-(s/connect stream dest-stream)
 
 
 (defn- get-db-fn-by-type [type]
@@ -167,24 +165,43 @@
           (d/recur))))))
 
 
+(defn- init-stream-processing []
+  (s/connect stream db-stream)
+  (s/connect stream dest-stream)
+  (process-db-stream)
+  (process-failed-db-writes)
+  (process-dest-stream))
+
+
+;;TODO check dest-stream backpressure!
+(defstate ^{:on-reload :noop} streams
+  :start
+  (init-stream-processing))
+
+
 (comment
+  (d/error! selos nil)
+  (alter-var-root #'selos (constantly nil))
+
+  (s/close! ertus)
+  (s/put! ertus "ses")
+
   (let [e      {:id         #uuid "598f7f22-f8b7-4b14-9923-e7eb4c64dc5b"
                 :write_key  "s4SjR-KgN1KBLMJkMLVUluL0y-rS9oZA"
                 :payload    {:data 291}
                 :arrived_at #inst "2020-05-21T17:41:11.142-00:00"}
         result @(http/post "https://www.google-analytics.com/collect"
-                  {:form-params e})])
+                  {:form-params e})]
+    result)
 
+  (require '[clojure.data.json :as json])
   (let [r @(http/get "https://jsonplaceholder.typicode.com/todos/1")]
-    (byte-streams/to-string (:body r)))
+    (json/read-str (byte-streams/to-string (:body r)) :key-fn keyword))
 
   (dotimes [_ 1]
     (put! {:id        (UUID/randomUUID)
            :write_key (nano-id 32)
-           :payload   {:data (rand-int 1000)}}))
-  (process-db-stream)
-  (process-failed-db-writes)
-  (process-dest-stream))
+           :payload   {:data (rand-int 1000)}})))
 
 
 (resource event-processing
