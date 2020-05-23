@@ -227,6 +227,7 @@
   :post ["/v1/event"]
   :content-type :json
   :post! (fn [ctx]
+           (println  "Source: " @*source*)
            (println  "Destinations: " @*destinations*)
            #_(->> ctx :request-data w/keywordize-keys put!))
   :handle-created (fn [ctx] {:success? true}))
