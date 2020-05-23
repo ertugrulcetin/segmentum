@@ -8,7 +8,7 @@
 (def api-url "https://www.google-analytics.com/collect")
 
 
-(defay mappings (-> (io/resource "transforms/analytics.edn")
+(defay mappings (-> (io/resource "transforms/google-analytics.edn")
                   slurp
                   edn/read-string))
 
