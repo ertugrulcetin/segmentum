@@ -71,7 +71,7 @@
         ((get-db-fn-by-type (:type event)) (dissoc event :type))
         (log/info "Fail write successfully written to DB: " event)))
     (catch Exception e
-      (log/error e "Retry write failed.: ")
+      (log/error e "Retry write failed for event: " event)
       (s/put! failed-write-stream event))))
 
 
