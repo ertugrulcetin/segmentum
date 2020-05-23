@@ -1,5 +1,6 @@
-(ns segmentum.logger
+(ns segmentum.api.logger
   (:require [segmentum.config :as conf]
+            [segmentum.util.imports :refer [resource]]
             [kezban.core :refer [when-no-aot]]
             [clj-time.coerce :as coerce]
             [clj-time.format :as time]
@@ -50,3 +51,9 @@
       (.setContext appender (LoggerFactory/getILoggerFactory))
       (.start appender)
       (.addAppender root-logger appender))))
+
+
+(resource sys-logs
+          :get ["/logs"]
+          :content-type :json
+          :handle-ok (fn [_] (logs)))
