@@ -14,8 +14,26 @@
             [nano-id.core :refer [nano-id]]
             [clojure.tools.logging :as log]
             [clojure.data.json :as json]
-            [mount.core :refer [defstate]])
+            [mount.core :refer [defstate]]
+            [clojure.java.classpath :as classpath]
+            [clojure.tools.namespace.find :as ns-find]
+            [clojure.string :as str])
   (:import (java.util UUID Date)))
+
+
+(defay transformers
+  (->> (for [ns-sym (ns-find/find-namespaces (classpath/system-classpath))
+             :let [starts-with? (partial str/starts-with? (name ns-sym))]
+             :when (and (starts-with? "segmentum.transformations.")
+                     (find-ns ns-sym))]
+         (some #(when (:transformer (meta %)) [(-> % meta :type) %])
+           (vals (ns-publics ns-sym))))
+    (filter identity)
+    (into {})))
+
+
+(when-no-aot
+  (log/info "Found transformers: " (keys @transformers)))
 
 
 ;;TODO randomUUID, what if other instances produce the same ID?
@@ -136,7 +154,7 @@
         (if (identical? ::drained event)
           ::drained
                        ;;TODO find suitable handler according to event data
-          (let [{:keys [url params]} (trans.ga/handler event)]
+          (let [{:keys [url params]} (trans.ga/transform event)]
             (d/timeout!
               (d/chain'
                 (http/post url {:form-params params})
