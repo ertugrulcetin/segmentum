@@ -27,7 +27,7 @@
              :let [starts-with? (partial str/starts-with? (name ns-sym))]
              :when (and (starts-with? "segmentum.transformations.")
                      (find-ns ns-sym))]
-         (some #(when (:transformer (meta %)) [(-> % meta :type) %])
+         (some #(when (:transformer (meta %)) [(-> % meta :transformer) %])
            (vals (ns-publics ns-sym))))
     (filter identity)
     (into {})))
@@ -75,6 +75,7 @@
          (d/recur (conj (vec (rest events)) (update event :retry inc))))))))
 
 
+;;TODO find another solution for periodical scanning, it creates pending take!!!
 (defn- process-failed-db-writes []
   (mc/async-loop 1 [events []]
     (d/timeout!
@@ -199,6 +200,11 @@
 
 
 (comment
+  stream
+  db-stream
+  dest-stream
+  failed-write-stream
+
   (d/error! selos nil)
   (alter-var-root #'selos (constantly nil))
 
