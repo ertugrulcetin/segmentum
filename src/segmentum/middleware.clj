@@ -8,6 +8,7 @@
    [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
    [muuntaja.middleware :refer [wrap-format wrap-params]]
    [segmentum.config :refer [env]]
+   [segmentum.middleware.session :as seg.session]
    [ring-ttl-session.core :refer [ttl-memory-store]]
    [ring.middleware.defaults :refer [site-defaults wrap-defaults]]))
 
@@ -25,6 +26,7 @@
 
 (defn wrap-base [handler]
   (-> ((:middleware defaults) handler)
+    seg.session/bind-destinations
     (wrap-defaults
       (-> site-defaults
         (assoc-in [:security :anti-forgery] false)

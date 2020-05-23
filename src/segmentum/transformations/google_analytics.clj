@@ -8,11 +8,6 @@
 (def api-url "https://www.google-analytics.com/collect")
 
 
-(defay mappings (-> (io/resource "transforms/google-analytics.edn")
-                  slurp
-                  edn/read-string))
-
-
 ;;TODO ???
 #_(defn transform [event opts]
     (-> event
@@ -27,4 +22,4 @@
   ([event opts]
    ;;TODO opts ekle!
    {:url    api-url
-    :params (helper/data-transform @mappings event :ga)}))
+    :params (helper/data-transform event :ga)}))

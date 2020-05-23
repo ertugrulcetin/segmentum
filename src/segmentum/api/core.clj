@@ -9,7 +9,9 @@
 (resource hello
   :get ["/"]
   :content-type :text
-  :handle-ok (fn [ctx] "Hello Segmentum!!"))
+  :handle-ok (fn [ctx]
+               (clojure.pprint/pprint (-> ctx :request))
+               "Hello Segmentum!!"))
 
 
 (resource deneme
