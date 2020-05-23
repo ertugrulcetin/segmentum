@@ -14,16 +14,16 @@
 
 
 ;;TODO ???
-(defn transform [event opts]
-  (-> event
-    (set/rename-keys @mappings)
-    (merge {:v   (:google-analytics-version opts)
-            :tid (:google-tracking-id opts)})))
+#_(defn transform [event opts]
+    (-> event
+      (set/rename-keys @mappings)
+      (merge {:v   (:google-analytics-version opts)
+              :tid (:google-tracking-id opts)})))
 
 
-(defn ^{:transformer true} handler
+(defn ^{:transformer :google-analytics} transform
   ([event]
-   (handler event {}))
+   (transform event {}))
   ([event opts]
    ;;TODO opts ekle!
    {:url    api-url

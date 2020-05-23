@@ -24,7 +24,7 @@
   :content-type :json
   :post! (fn [ctx]
            (let [event (clojure.walk/keywordize-keys (:request-data ctx))]
-             (transformation.ga/handler event)))
+             (transformation.ga/transform event)))
   :handle-created (fn [ctx] {:success? true}))
 
 
