@@ -201,7 +201,7 @@
 
 
 (comment
-  stream
+  (.description stream)
   db-stream
   dest-stream
   failed-write-stream
@@ -246,10 +246,10 @@
   :get ["/streams"]
   :content-type :json
   :handle-ok (fn [_]
-               ;; update here according to streams
-               (-> {:main          (pr-str stream)
-                    :db            (pr-str db-stream)
-                    :destinations  (pr-str dest-stream)
-                    :failed-writes (pr-str failed-write-stream)}
+                       ;; update here according to streams
+               (-> {:events           (.description stream)
+                    :destinations     (.description dest-stream)
+                    :db               (.description db-stream)
+                    :failed-db-writes (.description failed-write-stream)}
                  pp/pprint
                  with-out-str)))
