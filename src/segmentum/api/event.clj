@@ -5,7 +5,6 @@
             [segmentum.db.core :as db]
             [segmentum.api.common :refer [*source* *destinations*]]
             [segmentum.transformations.google-analytics :as trans.ga]
-            [medley.core :as med]
             [manifold.stream :as s]
             [manifold.deferred :as d]
             [byte-streams :as bs]
