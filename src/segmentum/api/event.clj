@@ -18,7 +18,8 @@
             [mount.core :refer [defstate]]
             [clojure.java.classpath :as classpath]
             [clojure.tools.namespace.find :as ns-find]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [clojure.pprint :as pp])
   (:import (java.util UUID Date)))
 
 
@@ -233,7 +234,22 @@
   :post ["/v1/event"]
   :content-type :json
   :post! (fn [ctx]
-           (println  "Source: " @*source*)
-           (println  "Destinations: " @*destinations*)
+           (println "Source: " @*source*)
+           (println "Destinations: " @*destinations*)
            #_(->> ctx :request-data w/keywordize-keys put!))
   :handle-created (fn [ctx] {:success? true}))
+
+
+;;TODO add admin auth!
+;;TODO add executor that logs/info every 1 min?
+(resource stream-monitoring
+  :get ["/streams"]
+  :content-type :json
+  :handle-ok (fn [_]
+               ;; update here according to streams
+               (-> {:main          (pr-str stream)
+                    :db            (pr-str db-stream)
+                    :destinations  (pr-str dest-stream)
+                    :failed-writes (pr-str failed-write-stream)}
+                 pp/pprint
+                 with-out-str)))
