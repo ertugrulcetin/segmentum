@@ -75,7 +75,6 @@
       (s/put! failed-write-stream event))))
 
 
-;;TODO find another solution for periodical scanning, it creates pending take!!!
 (defn- process-failed-db-writes []
   (mc/async-loop 1 []
     (s/take! failed-write-stream ::drained)
