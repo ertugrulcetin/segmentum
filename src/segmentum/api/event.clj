@@ -5,6 +5,7 @@
             [segmentum.db.core :as db]
             [segmentum.api.common :refer [*source* *destinations*]]
             [segmentum.transformations.google-analytics :as trans.ga]
+            [medley.core :as med]
             [manifold.stream :as s]
             [manifold.deferred :as d]
             [byte-streams :as bs]
@@ -49,7 +50,7 @@
 (defonce dest-stream (s/stream 2048))
 
 
-(def fail-xf (map #(assoc % :retry 0)))
+(def fail-xf (map #(update % :retry (fnil inc -1))))
 (defonce failed-write-stream (s/stream 512 fail-xf))
 
 
@@ -62,38 +63,28 @@
 
 
 (defn- try-write-to-db
-  ([event events]
-   (try-write-to-db event events true))
-  ([event events new-event?]
-   (try
-     ((get-db-fn-by-type (:type event)) (dissoc event :type))
-     (log/info "Fail write successfully written to DB: " event)
-     (-> events rest vec d/recur)
-     (catch Exception e
-       (log/error e "Retry write failed.")
-       (if new-event?
-         (d/recur (conj events (update event :retry inc)))
-         (d/recur (conj (vec (rest events)) (update event :retry inc))))))))
+  [event]
+  (try
+    (if (>= (:retry event) 3)
+      (log/warn "Discarding event due to max number of retry attempt." event)
+      (do
+        ((get-db-fn-by-type (:type event)) (dissoc event :type))
+        (log/info "Fail write successfully written to DB: " event)))
+    (catch Exception e
+      (log/error e "Retry write failed.: ")
+      (s/put! failed-write-stream event))))
 
 
 ;;TODO find another solution for periodical scanning, it creates pending take!!!
 (defn- process-failed-db-writes []
-  (mc/async-loop 1 [events []]
-    (d/timeout!
-      (s/take! failed-write-stream ::drained)
-      1000
-      ::timeout)
+  (mc/async-loop 1 []
+    (s/take! failed-write-stream ::drained)
 
     (fn [data]
-      (if-not (#{::drained ::timeout} data)
-        (try-write-to-db data events)
-        (if-let [f-event (first events)]
-          (if (>= (:retry f-event) 3)
-            (do
-              (log/warn "Discarding event due to max number of retry attempt." f-event)
-              (-> events rest vec d/recur))
-            (try-write-to-db f-event events false))
-          (d/recur []))))))
+      (when-not (#{::drained} data)
+        (try-write-to-db data)
+        (Thread/sleep 1000)
+        (d/recur)))))
 
 
 (defn- process-db-stream []
