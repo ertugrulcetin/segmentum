@@ -7,14 +7,9 @@
    [clojure.java.io :as io]))
 
 
-(def mappings-data (->
-                     (io/resource "transforms/google-analytics.edn")
-                     slurp
-                     edn/read-string))
-
 
 (deftest segmentum-input-data-test
   (let [input      (test-helper/json-file->clj-data "ga_input.json")
         output     (test-helper/json-file->clj-data "ga_output.json")
-        transform  (helper/data-transform mappings-data (first input) :ga)]
+        transform  (helper/data-transform (first input) :ga)]
     (is (= (first output) transform))))

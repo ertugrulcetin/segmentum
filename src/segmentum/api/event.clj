@@ -3,6 +3,7 @@
             [segmentum.util.macros :as mc]
             [segmentum.config :as conf :refer [env]]
             [segmentum.db.core :as db]
+            [segmentum.api.common :refer [*source* *destinations*]]
             [segmentum.transformations.google-analytics :as trans.ga]
             [manifold.stream :as s]
             [manifold.deferred :as d]
@@ -225,5 +226,7 @@
 (resource event-processing
   :post ["/v1/event"]
   :content-type :json
-  :post! #(->> % :request-data w/keywordize-keys put!)
+  :post! (fn [ctx]
+           (println  "Destinations: " @*destinations*)
+           #_(->> ctx :request-data w/keywordize-keys put!))
   :handle-created (fn [ctx] {:success? true}))

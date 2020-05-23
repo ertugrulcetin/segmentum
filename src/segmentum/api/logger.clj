@@ -54,6 +54,6 @@
 
 
 (resource sys-logs
-          :get ["/logs"]
-          :content-type :json
-          :handle-ok (fn [_] (logs)))
+  :get ["/logs"]
+  :content-type :json
+  :handle-ok (fn [_] (logs)))

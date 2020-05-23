@@ -5,7 +5,8 @@
             [clojure.tools.logging :as log]))
 
 (def ^:dynamic *current-user* (atom nil))
-(def ^:dynamic *destinations* (atom []))
+(def ^:dynamic *source* (atom nil))
+(def ^:dynamic *destinations* (atom nil))
 
 
 (defexception ModelValidationException)

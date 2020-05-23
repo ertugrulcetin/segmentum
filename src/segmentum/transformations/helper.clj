@@ -1,8 +1,16 @@
-(ns segmentum.transformations.helper)
+(ns segmentum.transformations.helper
+  (:require [clojure.java.io :as io]
+            [clojure.edn :as edn]
+            [kezban.core :refer :all]))
 
 
-(defn data-transform [mappings-data incoming-data integration-key]
-  (loop [mapping mappings-data
+(defay mappings (-> (io/resource "transforms/mappings.edn")
+                  slurp
+                  edn/read-string))
+
+
+(defn data-transform [incoming-data integration-key]
+  (loop [mapping @mappings
          transform {}]
     (if (empty? mapping)
       transform
