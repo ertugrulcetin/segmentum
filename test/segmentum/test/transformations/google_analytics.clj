@@ -8,7 +8,7 @@
 
 
 (def mappings-data (->
-                     (io/resource "transforms/analytics.edn")
+                     (io/resource "transforms/google-analytics.edn")
                      slurp
                      edn/read-string))
 

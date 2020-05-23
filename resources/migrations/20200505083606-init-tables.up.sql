@@ -25,7 +25,7 @@ name VARCHAR(100) NOT NULL,
 surname VARCHAR(100) NOT NULL,
 email VARCHAR(254) UNIQUE NOT NULL,
 password_salt UUID UNIQUE NOT NULL,
-password UUID UNIQUE NOT NULL,
+password TEXT UNIQUE NOT NULL,
 role_id UUID NOT NULL REFERENCES roles(id),
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -65,17 +65,13 @@ type VARCHAR(254) UNIQUE NOT NULL PRIMARY KEY
 
 --;;
 
-INSERT INTO source_types (type) VALUES ('javascript');
-
---;;
-
 CREATE TABLE IF NOT EXISTS source (
 id UUID DEFAULT uuid_generate_v4() UNIQUE NOT NULL PRIMARY KEY,
 workspace_id UUID NOT NULL REFERENCES workspace(id),
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 created_by UUID NOT NULL,
 name citext NOT NULL,
-write_key VARCHAR(254) UNIQUE NOT NULL,
+write_key VARCHAR(32) UNIQUE NOT NULL,
 type VARCHAR(254) NOT NULL REFERENCES source_types(type),
 UNIQUE(workspace_id, name));
 
@@ -83,10 +79,6 @@ UNIQUE(workspace_id, name));
 
 CREATE TABLE IF NOT EXISTS destination_types (
 type VARCHAR(254) UNIQUE NOT NULL PRIMARY KEY);
-
---;;
-
-INSERT INTO destination_types (type) VALUES ('google_analytics');
 
 --;;
 
@@ -104,7 +96,7 @@ CREATE TABLE IF NOT EXISTS events (
 id UUID UNIQUE NOT NULL PRIMARY KEY,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 arrived_at TIMESTAMP NOT NULL,
-write_key VARCHAR(254) UNIQUE NOT NULL,
+write_key VARCHAR(32) UNIQUE NOT NULL,
 payload JSONB NOT NULL);
 
 --;;
@@ -117,7 +109,7 @@ CREATE TABLE IF NOT EXISTS success_events (
 id UUID DEFAULT uuid_generate_v4() UNIQUE NOT NULL PRIMARY KEY,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 arrived_at TIMESTAMP NOT NULL,
-write_key VARCHAR(254) UNIQUE NOT NULL,
+write_key VARCHAR(32) UNIQUE NOT NULL,
 destination_id UUID NOT NULL REFERENCES destination(id),
 event_id UUID NOT NULL,
 request_payload JSONB NOT NULL,
@@ -129,7 +121,7 @@ CREATE TABLE IF NOT EXISTS fail_events (
 id UUID DEFAULT uuid_generate_v4() UNIQUE NOT NULL PRIMARY KEY,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 arrived_at TIMESTAMP NOT NULL,
-write_key VARCHAR(254) UNIQUE NOT NULL,
+write_key VARCHAR(32) UNIQUE NOT NULL,
 destination_id UUID NOT NULL REFERENCES destination(id),
 event_id UUID NOT NULL,
 request_payload JSONB NOT NULL,

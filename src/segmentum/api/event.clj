@@ -44,7 +44,7 @@
 
 (def db-xf (map #(vector (:id %) (:write_key %) (:payload %) (:arrived_at %))))
 (defonce db-stream (s/stream 1024 db-xf))
-(defonce dest-stream (s/stream 1024))
+(defonce dest-stream (s/stream 2048))
 
 
 (def fail-xf (map #(assoc % :retry 0)))

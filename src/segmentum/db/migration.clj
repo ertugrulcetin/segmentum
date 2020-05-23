@@ -8,4 +8,4 @@
                 :migration-dir "migrations/"
                 :db            db-uri}]
     (migratus/migrate config)
-    (migratus/up config 20200505083606)))
+    (migratus/up config 20210101000000)))
