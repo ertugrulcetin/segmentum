@@ -25,5 +25,5 @@ VALUES ('7c1c1a4d-bdfa-4346-9ea9-d90f298824c7', 'dcfdf014-39b3-47f2-9b44-b02f843
 
 --;;
 
-INSERT INTO destination (id, created_by, type, source_id, config)
-VALUES ('b7dc04da-75a1-47b6-b863-2e28edfe6f07', '5182f20d-c788-47cb-8dec-319eefc8bc36', 'google-analytics', '7c1c1a4d-bdfa-4346-9ea9-d90f298824c7', '{"trackingId" : "UA-165839048-1"}');
+INSERT INTO destination (id, created_by, type, source_id, config, enabled)
+VALUES ('b7dc04da-75a1-47b6-b863-2e28edfe6f07', '5182f20d-c788-47cb-8dec-319eefc8bc36', 'google-analytics', '7c1c1a4d-bdfa-4346-9ea9-d90f298824c7', '{"trackingId" : "UA-165839048-1"}', true);
