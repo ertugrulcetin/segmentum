@@ -143,7 +143,7 @@
     (try
       (assoc result :body (json/read-str body))
       (catch Exception e
-        (log/error e "Response body could not parse into JSON form.")
+        (log/warn e "Response body could not parse into JSON form.")
         (assoc result :body body)))))
 
 
