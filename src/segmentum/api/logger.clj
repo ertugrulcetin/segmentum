@@ -53,6 +53,7 @@
       (.addAppender root-logger appender))))
 
 
+;;TODO auth!
 (resource sys-logs
   :get ["/logs"]
   :content-type :json
