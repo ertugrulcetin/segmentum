@@ -4,7 +4,6 @@
             [segmentum.config :as conf :refer [env]]
             [segmentum.db.core :as db]
             [segmentum.api.common :refer [*source* *destinations*]]
-            [segmentum.transformations.google-analytics :as trans.ga]
             [manifold.stream :as s]
             [manifold.deferred :as d]
             [byte-streams :as bs]
@@ -14,7 +13,6 @@
             [kezban.core :refer :all]
             [nano-id.core :refer [nano-id]]
             [clojure.tools.logging :as log]
-            [clojure.data.json :as json]
             [mount.core :refer [defstate]]
             [clojure.java.classpath :as classpath]
             [clojure.tools.namespace.find :as ns-find]
@@ -177,6 +175,11 @@
           (d/recur))))))
 
 
+(defn- event->db-write [event]
+    (s/put! db-stream (assoc event :write_key (:write_key @*source*)
+                                   :payload (dissoc event :id :arrived_at))))
+
+
 (defn- event->destination-events [event]
   (->> @*destinations*
     (map (fn [d]
@@ -187,7 +190,7 @@
 
 
 (defn- init-stream-processing []
-  (s/connect stream db-stream)
+  (s/connect-via stream event->db-write db-stream)
   (s/connect-via stream event->destination-events dest-stream)
   (process-db-stream)
   (process-failed-db-writes)
