@@ -3,16 +3,16 @@
    [reagent.core :as reagent]
    [reagent.dom :as rdom]
    [re-frame.core :as re-frame]
-   [frontend.events :as events]
+   [frontend.common.events :as common-events]
    [frontend.routes :as routes]
-   [frontend.views :as views]
    [frontend.config :as config]
-   ))
+   [frontend.navigation.views :as views]))
 
 
 (defn dev-setup []
   (when config/debug?
     (println "dev mode")))
+
 
 (defn ^:dev/after-load mount-root []
   (re-frame/clear-subscription-cache!)
@@ -20,8 +20,9 @@
     (rdom/unmount-component-at-node root-el)
     (rdom/render [views/main-panel] root-el)))
 
+
 (defn init []
   (routes/app-routes)
-  (re-frame/dispatch-sync [::events/initialize-db])
+  (re-frame/dispatch-sync [::common-events/initialize-db])
   (dev-setup)
   (mount-root))

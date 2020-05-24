@@ -11,7 +11,7 @@
                  [clj-commons/secretary "1.2.4"]]
 
   :plugins [[lein-shadow "0.2.0"]
-            
+            [lein-less "1.7.5"]
             [lein-shell "0.5.0"]]
 
   :min-lein-version "2.9.0"
@@ -19,6 +19,9 @@
   :source-paths ["src/clj" "src/cljs"]
 
   :test-paths   ["test/cljs"]
+
+  :less {:source-paths ["less"]
+         :target-path  "resources/public/css"}
 
   :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"
                                     "test/js"]
@@ -29,7 +32,7 @@
                              :linux   "xdg-open"}}}
 
   :shadow-cljs {:nrepl {:port 8777}
-                
+
                 :builds {:app {:target :browser
                                :output-dir "resources/public/js/compiled"
                                :asset-path "/js/compiled"
@@ -43,8 +46,8 @@
                                           {day8.re-frame.tracing day8.re-frame.tracing-stubs}}}
 
                                :devtools {:http-root "resources/public"
-                                          :http-port 8280
-                                          }}
+                                          :http-port 8280}}
+
                          :browser-test
                          {:target :browser-test
                           :ns-regexp "-test$"
@@ -75,8 +78,8 @@
                    [day8.re-frame/re-frame-10x "0.6.5"]]
     :source-paths ["dev"]}
 
-   :prod {}
-   
-}
+   :prod {}}
+
+
 
   :prep-tasks [])
