@@ -16,6 +16,7 @@
             [mount.core :refer [defstate]]
             [clojure.java.classpath :as classpath]
             [clojure.tools.namespace.find :as ns-find]
+            [clojure.data.json :as json]
             [clojure.string :as str]
             [clojure.pprint :as pp])
   (:import (java.util UUID Date)))
@@ -42,7 +43,6 @@
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
 
-;;TODO write_key comes with http header...
 (def db-xf (map #(vector (:id %) (:write_key %) (:params %) (:arrived_at %))))
 (defonce db-stream (s/stream 1024 db-xf))
 (defonce dest-stream (s/stream 2048))
@@ -109,7 +109,7 @@
    :arrived_at      (-> result :event :arrived_at)
    :event_id        (-> result :event :id)
    :request_payload (:payload result)
-   :response        (dissoc result :event :payload :body)})
+   :response        (dissoc result :event :payload)})
 
 
 (defn- process-fail-result
@@ -133,6 +133,20 @@
         (s/put! failed-write-stream (assoc event :type :success))))))
 
 
+(defn result->map [result]
+  (let [body (-> (:body result)
+               (or "")
+               bs/to-string
+                 ; PostgreSQL does not allow '\u0000' unicode
+               (str/replace "\u0000" "")
+               (str/replace "\\u0000" ""))]
+    (try
+      (assoc result :body (json/read-str body))
+      (catch Exception e
+        (log/error e "Response body could not parse into JSON form.")
+        (assoc result :body body)))))
+
+
 ;;TODO ilk eventi islemiyor status falan nil donuyor, sonrakiler calisiyor...
 (defn- process-dest-stream []
   (let [parallelism (if (:prod env) conf/cores 1)]
@@ -145,7 +159,7 @@
           ::drained
           (let [transformer (:transformer event)
                 {:keys [url payload]} (transformer (:params event) (:config event))
-                event (dissoc event :transformer :config)]
+                event       (dissoc event :transformer :config)]
             (d/timeout!
               (d/chain'
                 (http/post url {:form-params payload})
@@ -157,7 +171,7 @@
 
       (fn [result]
         (if (and (not (::timeout result)) (not= ::drained result))
-          (update result :body bs/to-string)
+          (result->map result)
           result))
 
       (fn [result]
@@ -211,7 +225,7 @@
            (cond
              (not @*source*) (throw (ex-info "No source found for given key" {:type :400}))
              (not @*destinations*) (throw (ex-info "No destination found for given source" {:type :400}))
-             ;;TODO add validation? maybe optional, configured by admins
+                     ;;TODO add validation? maybe optional, configured by admins
              :else (->> ctx
                      :request-data
                      w/keywordize-keys
