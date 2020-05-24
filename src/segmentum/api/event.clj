@@ -21,6 +21,7 @@
             [clojure.pprint :as pp])
   (:import (java.util UUID Date)))
 
+;;TODO adjust logs...!
 
 (defay transformers
   (->> (for [ns-sym (ns-find/find-namespaces (classpath/system-classpath))
@@ -210,12 +211,6 @@
 (defstate ^{:on-reload :noop} streams
   :start
   (init-stream-processing))
-
-
-(comment
-  (dotimes [_ 1]
-    (put! {:write_key (nano-id 32)
-           :payload   {:data (rand-int 1000)}})))
 
 
 (resource event-processing
