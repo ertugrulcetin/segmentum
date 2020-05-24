@@ -43,7 +43,7 @@
 
 
 ;;TODO write_key comes with http header...
-(def db-xf (map #(vector (:id %) (:write_key %) (:payload %) (:arrived_at %))))
+(def db-xf (map #(vector (:id %) (:write_key %) (:params %) (:arrived_at %))))
 (defonce db-stream (s/stream 1024 db-xf))
 (defonce dest-stream (s/stream 2048))
 
@@ -92,10 +92,10 @@
                        (catch Exception e
                          (log/error e "Failed to write events to DB!")
                          (s/put-all! failed-write-stream (map
-                                                           (fn [[id write-key payload arrived-at]]
+                                                           (fn [[id write-key params arrived-at]]
                                                              {:id         id
                                                               :write_key  write-key
-                                                              :payload    payload
+                                                              :params     params
                                                               :arrived_at arrived-at
                                                               :type       :raw})
                                                            events)))))
@@ -105,12 +105,11 @@
 
 (defn- result->event-model [result]
   {:write_key       (-> result :event :write_key)
-   ;;TODO destination_id
-   :destination_id  (UUID/randomUUID)
+   :destination_id  (-> result :event :destination_id)
    :arrived_at      (-> result :event :arrived_at)
    :event_id        (-> result :event :id)
    :request_payload (:payload result)
-   :response        (dissoc result :event :payload)})
+   :response        (dissoc result :event :payload :body)})
 
 
 (defn- process-fail-result
@@ -145,16 +144,16 @@
         (if (identical? ::drained event)
           ::drained
           (let [transformer (:transformer event)
-                {:keys [url params]} (transformer event (:config event))
+                {:keys [url payload]} (transformer (:params event) (:config event))
                 event (dissoc event :transformer :config)]
             (d/timeout!
               (d/chain'
-                (http/post url {:form-params params})
-                #(assoc % :event event :payload params))
+                (http/post url {:form-params payload})
+                #(assoc % :event event :payload payload))
               1000
               {::timeout true
                :event    event
-               :payload  params}))))
+               :payload  payload}))))
 
       (fn [result]
         (if (and (not (::timeout result)) (not= ::drained result))
@@ -175,22 +174,18 @@
           (d/recur))))))
 
 
-(defn- event->db-write [event]
-    (s/put! db-stream (assoc event :write_key (:write_key @*source*)
-                                   :payload (dissoc event :id :arrived_at))))
-
-
 (defn- event->destination-events [event]
   (->> @*destinations*
     (map (fn [d]
            (assoc event
              :transformer ((keyword (:type d)) @transformers)
-             :config (:config d))))
+             :config (:config d)
+             :destination_id (:id d))))
     (s/put-all! dest-stream)))
 
 
 (defn- init-stream-processing []
-  (s/connect-via stream event->db-write db-stream)
+  (s/connect stream db-stream)
   (s/connect-via stream event->destination-events dest-stream)
   (process-db-stream)
   (process-failed-db-writes)
@@ -217,7 +212,11 @@
              (not @*source*) (throw (ex-info "No source found for given key" {:type :400}))
              (not @*destinations*) (throw (ex-info "No destination found for given source" {:type :400}))
              ;;TODO add validation? maybe optional, configured by admins
-             :else (->> ctx :request-data w/keywordize-keys put!)))
+             :else (->> ctx
+                     :request-data
+                     w/keywordize-keys
+                     (hash-map :write_key (:write_key @*source*) :params)
+                     put!)))
   :handle-created (fn [_] {:success? true}))
 
 

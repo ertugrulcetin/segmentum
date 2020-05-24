@@ -17,9 +17,9 @@
 
 
 (defn ^{:transformer :google-analytics} transform
-  ([event]
-   (transform event {}))
-  ([event config]
+  ([params]
+   (transform params {}))
+  ([params config]
    ;;TODO config ekle!
    {:url    api-url
-    :params (helper/data-transform event :ga)}))
+    :payload (helper/data-transform params :ga)}))
