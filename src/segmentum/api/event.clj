@@ -242,4 +242,6 @@
                      :failed-db-writes (.description failed-write-stream)}
                  pp/pprint
                  with-out-str
-                 (str "If we have more than 16.000 pending takes or puts which means we are in trouble (System throws and exception after 16.3k pending operations and halts). You can optimize stream operations by tuning configuration.\n\n"))))
+                 (str "If we have more than 16.000 pending takes or puts which means we are in trouble "
+                   "(System throws and exception after 16.3k pending operations and halts). "
+                   "You can optimize stream operations by tuning configuration.\n\n"))))
