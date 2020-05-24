@@ -236,9 +236,10 @@
   :content-type :json
   :handle-ok (fn [_]
                        ;; update here according to streams
-               (-> {:events           (.description stream)
-                    :destinations     (.description dest-stream)
-                    :db               (.description db-stream)
-                    :failed-db-writes (.description failed-write-stream)}
+               (->> {:events           (.description stream)
+                     :destinations     (.description dest-stream)
+                     :db               (.description db-stream)
+                     :failed-db-writes (.description failed-write-stream)}
                  pp/pprint
-                 with-out-str)))
+                 with-out-str
+                 (str "If we have more than 16.000 pending takes or puts which means we are in trouble (System throws and exception after 16.3k pending operations and halts). You can optimize stream operations by tuning configuration.\n\n"))))
