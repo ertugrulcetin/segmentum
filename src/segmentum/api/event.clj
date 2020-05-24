@@ -28,7 +28,7 @@
              :let [starts-with? (partial str/starts-with? (name ns-sym))]
              :when (and (starts-with? "segmentum.transformations.")
                      (find-ns ns-sym))]
-         (some #(when (:transformer (meta %)) [(-> % meta :transformer) %])
+         (some #(when-let [t (:transformer (meta %))] [t %])
            (vals (ns-publics ns-sym))))
     (filter identity)
     (into {})))
