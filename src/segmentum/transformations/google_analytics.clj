@@ -19,7 +19,7 @@
 (defn ^{:transformer :google-analytics} transform
   ([event]
    (transform event {}))
-  ([event opts]
-   ;;TODO opts ekle!
+  ([event config]
+   ;;TODO config ekle!
    {:url    api-url
     :params (helper/data-transform event :ga)}))

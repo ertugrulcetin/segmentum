@@ -1,5 +1,5 @@
 (ns segmentum.api.core
-  (:require [segmentum.util.imports :refer [->ModelValidationException resource]]
+  (:require [segmentum.util.imports :refer [resource]]
             [patika.core :as p]
             [compojure.core :as c]
             [compojure.route :as r]
@@ -12,13 +12,6 @@
   :handle-ok (fn [ctx]
                (clojure.pprint/pprint (-> ctx :request))
                "Hello Segmentum!!"))
-
-
-(resource deneme
-  :get ["/test"]
-  :content-type :json
-  :handle-ok (fn [ctx]
-               (throw (->ModelValidationException "heyoo"))))
 
 
 (resource event

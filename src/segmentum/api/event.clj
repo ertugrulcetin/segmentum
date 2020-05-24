@@ -44,6 +44,7 @@
 (defonce put! (throttle-fn (partial s/put! stream) 1000 :second))
 
 
+;;TODO write_key comes with http header...
 (def db-xf (map #(vector (:id %) (:write_key %) (:payload %) (:arrived_at %))))
 (defonce db-stream (s/stream 1024 db-xf))
 (defonce dest-stream (s/stream 2048))
@@ -107,7 +108,7 @@
 (defn- result->event-model [result]
   {:write_key       (-> result :event :write_key)
    ;;TODO destination_id
-   :destination_id  1
+   :destination_id  (UUID/randomUUID)
    :arrived_at      (-> result :event :arrived_at)
    :event_id        (-> result :event :id)
    :request_payload (:payload result)
@@ -145,8 +146,9 @@
         (log/info " - Event: " event)
         (if (identical? ::drained event)
           ::drained
-                       ;;TODO find suitable handler according to event data
-          (let [{:keys [url params]} (trans.ga/transform event)]
+          (let [transformer (:transformer event)
+                {:keys [url params]} (transformer event (:config event))
+                event (dissoc event :transformer :config)]
             (d/timeout!
               (d/chain'
                 (http/post url {:form-params params})
@@ -175,9 +177,18 @@
           (d/recur))))))
 
 
+(defn- event->destination-events [event]
+  (->> @*destinations*
+    (map (fn [d]
+           (assoc event
+             :transformer ((keyword (:type d)) @transformers)
+             :config (:config d))))
+    (s/put-all! dest-stream)))
+
+
 (defn- init-stream-processing []
   (s/connect stream db-stream)
-  (s/connect stream dest-stream)
+  (s/connect-via stream event->destination-events dest-stream)
   (process-db-stream)
   (process-failed-db-writes)
   (process-dest-stream))
@@ -190,32 +201,8 @@
 
 
 (comment
-  (.description stream)
-  db-stream
-  dest-stream
-  failed-write-stream
-
-  (d/error! selos nil)
-  (alter-var-root #'selos (constantly nil))
-
-  (s/close! ertus)
-  (s/put! ertus "ses")
-
-  (let [e      {:id         #uuid "598f7f22-f8b7-4b14-9923-e7eb4c64dc5b"
-                :write_key  "s4SjR-KgN1KBLMJkMLVUluL0y-rS9oZA"
-                :payload    {:data 291}
-                :arrived_at #inst "2020-05-21T17:41:11.142-00:00"}
-        result @(http/post "https://www.google-analytics.com/collect"
-                  {:form-params e})]
-    result)
-
-  (require '[clojure.data.json :as json])
-  (let [r @(http/get "https://jsonplaceholder.typicode.com/todos/1")]
-    (json/read-str (byte-streams/to-string (:body r)) :key-fn keyword))
-
   (dotimes [_ 1]
-    (put! {:id        (UUID/randomUUID)
-           :write_key (nano-id 32)
+    (put! {:write_key (nano-id 32)
            :payload   {:data (rand-int 1000)}})))
 
 
@@ -223,10 +210,12 @@
   :post ["/v1/event"]
   :content-type :json
   :post! (fn [ctx]
-           (println "Source: " @*source*)
-           (println "Destinations: " @*destinations*)
-           #_(->> ctx :request-data w/keywordize-keys put!))
-  :handle-created (fn [ctx] {:success? true}))
+           (cond
+             (not @*source*) (throw (ex-info "No source found for given key" {:type :400}))
+             (not @*destinations*) (throw (ex-info "No destination found for given source" {:type :400}))
+             ;;TODO add validation? maybe optional, configured by admins
+             :else (->> ctx :request-data w/keywordize-keys put!)))
+  :handle-created (fn [_] {:success? true}))
 
 
 ;;TODO add admin auth!

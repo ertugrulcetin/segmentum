@@ -9,7 +9,7 @@
   (if (and (= "/v1/event" uri)
         (not (str/blank? write-key)))
     (let [source       (delay (db/query :get-source-by-write-key {:write_key write-key}))
-          destinations (delay (db/query :get-destinations-by-source-id {:source_id (:id @source)}))]
+          destinations (delay (db/query :get-destinations-type-and-conf {:source_id (:id @source)}))]
       (binding [*source*       source
                 *destinations* destinations]
         (thunk)))
