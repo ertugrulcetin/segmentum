@@ -14,3 +14,48 @@ body,
   width: 100%;
   height: 100%;
 }
+.seg-dashboard-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.seg-dashboard-container .seg-sidenav-container {
+  width: 100px;
+  height: 100%;
+  background-color: #234361;
+}
+.seg-dashboard-container .seg-sidenav-container .seg-menu-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  opacity: .8;
+  padding: 15px 0 15px 0;
+  font-size: 12px;
+  cursor: pointer;
+}
+.seg-dashboard-container .seg-sidenav-container .seg-menu-container:hover {
+  opacity: 1;
+}
+.seg-dashboard-container .seg-sidenav-container .seg-menu-active {
+  background-color: #47b881;
+}
+.seg-dashboard-container .seg-sidenav-container .seg-logo-container {
+  height: 50px;
+}
+.seg-dashboard-container .seg-dashboard-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.seg-dashboard-container .seg-dashboard-content .seg-navbar-container {
+  width: 100%;
+  height: 50px;
+}
+.seg-dashboard-container .seg-dashboard-content .seg-center-container {
+  width: 100%;
+  height: 100%;
+  background-color: #f0f1f5;
+}

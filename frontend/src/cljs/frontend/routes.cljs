@@ -32,5 +32,9 @@
   (defroute "/register" []
     (re-frame/dispatch [::navigation-events/set-active-panel :register-panel]))
 
+
+  (defroute "/dashboard" []
+    (re-frame/dispatch [::navigation-events/set-active-panel :dashboard-panel]))
+
   ;; --------------------
   (hook-browser-navigation!))
