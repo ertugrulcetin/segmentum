@@ -256,14 +256,17 @@
            (keep (fn [[k v]] (when v k)))
            (every? #(contains? (permit data rule) %))))
 
-(defn control-user-register []
+(defn write-user-to-db [data]
+  (db/query :create-user! (merge data {:password_salt (UUID/randomUUID)})))
+
+(defn control-user-register [data]
   (let [user-param-rule {:name true
                          :surname true
                          :email true
                          :password true}]
     (if (permit? data user-param-rule)
-      (throw (ex-info "Missing Parameters" {:type :400}))
-      ())))
+      (write-user-to-db (permit data user-param-rule))
+      (throw (ex-info "Missing Parameters" {:type :400})))))
 
 (defn created-user [data]
-     (db/query :create-user! (permit data user-param-rule)))
+  (control-user-register data))

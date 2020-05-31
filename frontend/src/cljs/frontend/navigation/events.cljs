@@ -5,6 +5,6 @@
 
 
 (reg-event-db
- ::set-active-panel
- (fn-traced [db [_ active-panel]]
-   (assoc db :active-panel active-panel)))
+  ::set-active-panel
+  (fn-traced [db [_ active-panel]]
+    (assoc db :active-panel active-panel)))

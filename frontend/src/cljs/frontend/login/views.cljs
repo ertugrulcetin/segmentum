@@ -19,9 +19,9 @@
     {:reagent-render (fn []
                        [:div.seg-full-container.seg-cc-container
                         [:div.row
-                          [input "email" "Email" "text" [:login :form :email]]]
+                         [input "email" "Email" "text" [:login :form :email]]]
                         [:div.row
-                          [input "password" "Password" "password" [:login :form :password]]]
+                         [input "password" "Password" "password" [:login :form :password]]]
                         [:div.row
                          [:button.btn.waves-effect.waves-light
                           {:on-click #()}
