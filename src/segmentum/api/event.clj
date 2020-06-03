@@ -245,28 +245,3 @@
                  (str "If we have more than 16.000 pending takes or puts which means we are in trouble "
                    "(System throws and exception after 16.3k pending operations and halts). "
                    "You can optimize stream operations by tuning configuration.\n\n"))))
-
-
-(defn permit [data rule]
-  (some-> data
-          (select-keys (keys rule))))
-
-(defn permit? [data rule]
-  (some->> rule
-           (keep (fn [[k v]] (when v k)))
-           (every? #(contains? (permit data rule) %))))
-
-(defn write-user-to-db [data]
-  (db/query :create-user! (merge data {:password_salt (UUID/randomUUID)})))
-
-(defn control-user-register [data]
-  (let [user-param-rule {:name true
-                         :surname true
-                         :email true
-                         :password true}]
-    (if (permit? data user-param-rule)
-      (write-user-to-db (permit data user-param-rule))
-      (throw (ex-info "Missing Parameters" {:type :400})))))
-
-(defn created-user [data]
-  (control-user-register data))

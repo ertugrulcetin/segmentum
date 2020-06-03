@@ -46,9 +46,9 @@
                  [honeysql "0.9.10"]
                  [amalloy/ring-buffer "1.3.1"]
                  [clj-time "0.15.2"]
-                 [camel-snake-kebab "0.4.1"]
                  [throttler "1.0.0"]
-                 [nano-id "1.0.0"]]
+                 [nano-id "1.0.0"]
+                 [crypto-password "0.2.0"]]
 
   :min-lein-version "2.0.0"
 
