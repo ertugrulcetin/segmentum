@@ -1,6 +1,6 @@
 # segmentum
 
-Segmentum is Segment.com open-source alternative. 
+Segmentum is Segment.com open-source alternative. **WORK IN PROGRESS**
 
 ## Linting
 `lein kibit`<br/> <br/>
