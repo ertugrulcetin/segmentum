@@ -66,7 +66,7 @@
             [lein-cljfmt "0.6.7"]
             [lein-ancient "0.6.15"]]
 
-  :cljfmt {:indents {#".*" [[:inner 0]]}
+  :cljfmt {:indents                         {#".*" [[:inner 0]]}
            :remove-consecutive-blank-lines? false}
 
   :jvm-opts ^:replace ["-server"
@@ -104,7 +104,9 @@
 
                    :resource-paths ["env/dev/resources"]
 
-                   :repl-options   {:init-ns user :timeout 120000}
+                   :repl-options   {:init-ns segmentum.core
+                                    :init    (-main)
+                                    :timeout 120000}
 
                    :injections     [(require 'pjstadig.humane-test-output)
                                     (pjstadig.humane-test-output/activate!)]

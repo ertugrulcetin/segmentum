@@ -4,7 +4,6 @@
    [segmentum.nrepl :as nrepl]
    [segmentum.db.migration :as mig]
    [segmentum.config :refer [env]]
-   [segmentum.api.event]
    [luminus.http-server :as http]
    [luminus-migrations.core :as migrations]
    [clojure.tools.cli :refer [parse-opts]]
@@ -17,9 +16,9 @@
 (Thread/setDefaultUncaughtExceptionHandler
   (reify Thread$UncaughtExceptionHandler
     (uncaughtException [_ thread ex]
-      (log/error {:what :uncaught-exception
+      (log/error {:what      :uncaught-exception
                   :exception ex
-                  :where (str "Uncaught exception on" (.getName thread))}))))
+                  :where     (str "Uncaught exception on" (.getName thread))}))))
 
 
 (def cli-options
@@ -31,7 +30,7 @@
   :start
   (http/start
     (-> env
-      (assoc  :handler (handler/app))
+      (assoc :handler (handler/app))
       (update :port #(or (-> env :options :port) %))))
   :stop
   (http/stop http-server))
@@ -47,6 +46,17 @@
     (nrepl/stop repl-server)))
 
 
+(defn start-leftover-states
+  "For initially stopped defstates. When a ns with defstate(s) not required through app main ns
+   it requires manual starting. e.g. segmentum.api.event"
+  []
+  (->> @@#'mount/meta-state
+    (filter (fn [m] ((:status (val m)) :stopped)))
+    (map (fn [[_ state]] (:var state)))
+    (apply mount/start)
+    :started))
+
+
 (defn stop-app []
   (doseq [component (:stopped (mount/stop))]
     (log/info component "stopped"))
@@ -57,7 +67,8 @@
   (doseq [component (-> args
                       (parse-opts cli-options)
                       mount/start-with-args
-                      :started)]
+                      :started
+                      (concat (start-leftover-states)))]
     (log/info component "started"))
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-app)))
 
