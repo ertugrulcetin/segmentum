@@ -26,7 +26,6 @@ surname VARCHAR(100) NOT NULL,
 email VARCHAR(254) UNIQUE NOT NULL,
 password_salt UUID UNIQUE NOT NULL,
 password TEXT UNIQUE NOT NULL,
-role_id UUID NOT NULL REFERENCES roles(id),
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -53,9 +52,18 @@ value TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS workspace (
 id UUID DEFAULT uuid_generate_v4() UNIQUE NOT NULL PRIMARY KEY,
 created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-created_by UUID NOT NULL,
 name citext UNIQUE NOT NULL,
 archived BOOLEAN DEFAULT false);
+
+--;;
+
+CREATE TABLE IF NOT EXISTS user_workspace (
+user_id UUID NOT NULL REFERENCES users(id),
+workspace_id UUID NOT NULL REFERENCES workspace(id),
+role_id UUID NOT NULL REFERENCES roles(id),
+created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY(user_id, workspace_id)
+);
 
 --;;
 

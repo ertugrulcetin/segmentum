@@ -1,9 +1,9 @@
 INSERT INTO roles (id, name, priority)
-VALUES ('820f4d99-4a3d-4a10-9128-157457cb5faf', 'admin', 1);
+VALUES ('820f4d99-4a3d-4a10-9128-157457cb5faf', 'owner', 1);
 --;;
 
-INSERT INTO users (id, name, surname, email, password_salt, password, role_id)
-VALUES ('5182f20d-c788-47cb-8dec-319eefc8bc36', 'ertu','cetin','ertu.ctn@gmail.com', '2dca9ce3-a4a4-4440-b8d2-d6e8b653ec2e' , 'asjdnasjdnadnak', '820f4d99-4a3d-4a10-9128-157457cb5faf');
+INSERT INTO users (id, name, surname, email, password_salt, password)
+VALUES ('5182f20d-c788-47cb-8dec-319eefc8bc36', 'ertu','cetin','ertu.ctn@gmail.com', '2dca9ce3-a4a4-4440-b8d2-d6e8b653ec2e' , 'asjdnasjdnadnak');
 
 --;;
 
