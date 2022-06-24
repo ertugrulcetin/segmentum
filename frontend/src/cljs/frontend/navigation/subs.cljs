@@ -1,8 +1,13 @@
 (ns frontend.navigation.subs
   (:require
-   [re-frame.core :as re-frame]))
+   [re-frame.core :refer [reg-sub]]))
 
-(re-frame/reg-sub
- ::active-panel
- (fn [db _]
-   (:active-panel db)))
+(reg-sub
+  ::active-panel
+  (fn [db _]
+    (:active-panel db)))
+
+(reg-sub
+  ::alert
+  (fn [db _]
+    (:alert db)))

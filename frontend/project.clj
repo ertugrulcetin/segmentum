@@ -8,11 +8,20 @@
                  [reagent "0.10.0"]
                  [re-frame "0.12.0"]
                  [day8.re-frame/tracing "0.5.5"]
-                 [clj-commons/secretary "1.2.4"]]
+                 [day8.re-frame/http-fx "0.1.6"]
+                 [cljs-ajax "0.8.0"]
+                 [clj-commons/secretary "1.2.4"]
+                 [com.cemerick/url "0.1.1"]
+                 [lambdaisland/uri "1.1.0"]
+                 [kibu/pushy "0.3.8"]]
 
   :plugins [[lein-shadow "0.2.0"]
             [lein-less "1.7.5"]
-            [lein-shell "0.5.0"]]
+            [lein-shell "0.5.0"]
+            [lein-cljfmt "0.6.7"]]
+
+  :cljfmt {:indents {#".*" [[:inner 0]]}
+           :remove-consecutive-blank-lines? false}
 
   :min-lein-version "2.9.0"
 
